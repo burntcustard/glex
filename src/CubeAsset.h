@@ -1,6 +1,9 @@
 #ifndef CUBEASSET_H
 #define CUBEASSET_H
 
+// Fix for Eclipse not recognising openGL functions:
+#define GL_GLEXT_PROTOTYPES
+
 #include <vector>
 
 #include <GL/gl.h>
