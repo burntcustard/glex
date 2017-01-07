@@ -12,15 +12,21 @@
 
 #include "GameAsset.h"
 
+
 class CubeAsset : public GameAsset {
- public:
-  CubeAsset();
-  ~CubeAsset();
+
+  public:
+    CubeAsset(float, float, float, float, float, float);
+    ~CubeAsset();
+    glm::vec3 coords;
+    glm::vec4 color;
   virtual void Draw(GLuint);
 
- private:
-  GLuint element_buffer_length;
-  GLuint vertex_buffer_token, element_buffer_token;
+  private:
+    GLuint element_buffer_length;
+    GLuint vertex_buffer_token, element_buffer_token;
+
 };
+
 
 #endif // CUBEASSET_H

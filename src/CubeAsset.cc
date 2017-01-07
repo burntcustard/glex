@@ -2,8 +2,16 @@
 
 #include <vector>
 
-CubeAsset::CubeAsset() {
-  // Model coordinates, origin at bottom left (rear).
+
+CubeAsset::CubeAsset(float x, float y, float z, float r, float g, float b) {
+
+  coords = glm::vec3(x, y, z);
+  color = glm::vec4(r, g, b, 1.0f);
+
+  //std::cout << "coords: " << coords[0] << "," << coords[1] << "," << coords[2] << std::endl;
+
+  // Model coordinates, origin at bottom left rear.
+  // i.e. the 8 corners of the cube:
   std::vector<GLfloat> vertex_buffer = {
     0, 0, 0, // 0
     0, 1, 0, // 1    5–––––––––7
@@ -21,6 +29,8 @@ CubeAsset::CubeAsset() {
   	//std::cout << "vertex_buffer " << i << " is now: " << vertex_buffer[i] << std::endl;
   }
 
+  // List of coordinates of the triangles that make up the cube, using
+  // the coordinates previously specified in the vertex buffer:
   std::vector<GLuint> element_buffer = {
     2, 1, 0, // ⚀ 1
     2, 3, 1,
@@ -100,6 +110,16 @@ void CubeAsset::Draw(GLuint program_token) {
   glUseProgram(program_token);
   checkGLError();
 
+  // Grab the location of the coords uniform:
+  GLint uniCoords = glGetUniformLocation(program_token, "cube_coords");
+  // Change the value of the uniform to the cube's coordinates:
+  glUniform3f(uniCoords, coords[0], coords[1], coords[2]);
+
+  // Grab the location of the fragment color uniform:
+  GLint uniColor = glGetUniformLocation(program_token, "cube_color");
+  // Change the value of the unifom to the cube's color:
+  glUniform4f(uniColor, color[0], color[1], color[2], color[3]);
+
   // use the previously transferred buffer as the vertex array.  This way
   // we transfer the buffer once -- at construction -- not on every frame.
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_token);
@@ -114,6 +134,23 @@ void CubeAsset::Draw(GLuint program_token) {
   glEnableVertexAttribArray(position_attrib);
 
   checkGLError();
+
+  /*
+  // Transformations testing:
+  //
+
+  // Create transformations
+  glm::mat4 model;
+  glm::mat4 view;
+  glm::mat4 projection;
+  model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+  view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+  projection = glm::perspective(45.0f, 640.0f/480.0f, 0.1f, 100.0f);
+
+  // Get their uniform location(?)
+  //GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
+
+  //*/
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_token);
   glDrawElements(
