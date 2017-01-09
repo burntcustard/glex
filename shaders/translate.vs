@@ -11,6 +11,11 @@ out vec4 frag_color;
 uniform vec3 cube_coords;
 uniform vec4 cube_color;
 
+// model/view/projection matrices passed in:
+uniform mat4 model;
+uniform mat4 view;
+//uniform mat4 projection;
+
 
 mat4 projection(
     float angle_of_view_y,
@@ -26,6 +31,7 @@ mat4 projection(
              vec4(0.0, 0.0, (2.0*z_far*z_near)/(z_near-z_far), 0.0)
            );
 }
+
 
 
 mat4 rotate_x(float theta) {
@@ -61,6 +67,7 @@ mat4 rotate_z(float theta) {
 // Uses "angleRad" rather than "theta" to remind me that it's an angle, in radians.
 // This was mostly copied from:
 // http://www.neilmendoza.com/glsl-rotation-about-an-arbitrary-axis/
+// Also, glm::rotate could just be used.
 
 mat4 rotate(float x, float y, float z, float angleRad) {
 	vec3  a  = normalize(vec3(x, y, z));
@@ -84,10 +91,13 @@ mat4 translate(float x, float y, float z) {
 }
 
 void main() {
-      gl_Position = projection(radians(45.0), 16.0/9.0, -0.1, -1000.0)  // projection?
-      				* translate(0.0, 0.0, -3.0)                       // Making everything a little bit more.. away.
-                    * translate(cube_coords[0], cube_coords[1], cube_coords[2])   // view? Moves cubes around based on their (world?) coords
-                    * rotate(0.0, 0.0, 1.0, radians(30.0))            // model? Rotates each cube individually.
+	  
+      gl_Position = projection(radians(45.0), 16.0f / 9.0f, -0.1f, -100.0f)  // projection?
+      				* view                       // Making everything a little bit more.. away.
+                  //  * translate(cube_coords[0], cube_coords[1], cube_coords[2])   // model/view? Moves cubes around based on their (world?) coords
+                    * model            // model? Rotates each cube individually.
                     * vec4(position, 1.0f);
+      
+      //gl_Position = projection * view * model * vec4(position, 1.0f); // Trying to get to this working
       frag_color = cube_color * 0.7; // Makes the cubes a bit darker. Just experimenting for now!
 }

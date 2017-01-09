@@ -120,6 +120,28 @@ void CubeAsset::Draw(GLuint program_token) {
   // Change the value of the unifom to the cube's color:
   glUniform4f(uniColor, color[0], color[1], color[2], color[3]);
 
+  // Model view projection matrices testing - should be in GameAsset/main rather than just CubeAsset?...
+
+  glm::mat4 model;
+  // Move the cube to it's world space coordinates:
+  model = glm::translate(model, glm::vec3(coords[0], coords[1], coords[2]));
+  // Rotate the cube to it's world space rotation (i.e. around it's center point):
+  model = glm::rotate(model, -5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+
+  glm::mat4 view;
+  // Note that we're translating the scene in the reverse direction of where we want to move
+  view = glm::translate(view, (glm::vec3(0.0f, 0.0f, -3.0f)));
+
+  glm::mat4 projection;
+  projection = glm::perspective(45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
+
+  GLint modelLoc = glGetUniformLocation(program_token, "model");
+  glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+  GLint viewLoc = glGetUniformLocation(program_token, "view");
+  glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+  GLint projectionLoc = glGetUniformLocation(program_token, "projection");
+  glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
   // use the previously transferred buffer as the vertex array.  This way
   // we transfer the buffer once -- at construction -- not on every frame.
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_token);
