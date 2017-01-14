@@ -11,6 +11,11 @@
 
 #include "common.h"
 #include "GameWorld.h"
+#include "Camera.h"
+
+int testVar = 1337;
+
+Camera camera(5.0, 0.0, 0.0); // Initialise the camera at xyz coords 5,0,0.
 
 /*
  * SDL timers run in separate threads.  In the timer thread
@@ -33,6 +38,10 @@ struct SDLWindowDeleter {
     SDL_DestroyWindow(window);
   }
 };
+
+void Update() {
+  // Here's where keyboard input and modifying the camera info will go?
+}
 
 void Draw(const std::shared_ptr<SDL_Window> window, const std::shared_ptr<GameWorld> game_world) {
   glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -158,6 +167,7 @@ int main(int argc, char ** argv) {
       SDL_Quit();
       break;
     case SDL_USEREVENT:
+      Update();
       Draw(window, game_world);
 
       break;

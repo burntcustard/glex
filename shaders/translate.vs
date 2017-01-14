@@ -92,12 +92,9 @@ mat4 translate(float x, float y, float z) {
 
 void main() {
 	  
-      gl_Position = projection(radians(45.0), 16.0f / 9.0f, -0.1f, -100.0f)  // projection?
-      				* view                       // Making everything a little bit more.. away.
-                  //  * translate(cube_coords[0], cube_coords[1], cube_coords[2])   // model/view? Moves cubes around based on their (world?) coords
-                    * model            // model? Rotates each cube individually.
+      gl_Position = projection(radians(45.0), 16.0f / 9.0f, -0.1f, -100.0f)
+      				* view
+                    * model
                     * vec4(position, 1.0f);
-      
-      //gl_Position = projection * view * model * vec4(position, 1.0f); // Trying to get to this working
       frag_color = cube_color * 0.7; // Makes the cubes a bit darker. Just experimenting for now!
 }

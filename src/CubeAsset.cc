@@ -2,6 +2,8 @@
 
 #include <vector>
 
+extern Camera camera;
+
 
 CubeAsset::CubeAsset(float x, float y, float z, float r, float g, float b) {
 
@@ -128,9 +130,15 @@ void CubeAsset::Draw(GLuint program_token) {
   // Rotate the cube to it's world space rotation (i.e. around it's center point):
   model = glm::rotate(model, -5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-  glm::mat4 view;
-  // Note that we're translating the scene in the reverse direction of where we want to move
-  view = glm::translate(view, (glm::vec3(0.0f, 0.0f, -3.0f)));
+  glm::vec3 cameraLocation = glm::vec3(4.0f, 4.0f, 0.0f);
+  glm::vec3 cameraFacing = glm::vec3(0.0f, 0.0f, 0.0f);
+  glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
+
+  extern int testVar;
+
+  int copyOfTestVar = testVar;
+
+  glm::mat4 view = camera.GetView();
 
   glm::mat4 projection;
   projection = glm::perspective(45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
@@ -154,25 +162,6 @@ void CubeAsset::Draw(GLuint program_token) {
                         (void*)0                       /* array buffer offset */
                         );
   glEnableVertexAttribArray(position_attrib);
-
-  checkGLError();
-
-  /*
-  // Transformations testing:
-  //
-
-  // Create transformations
-  glm::mat4 model;
-  glm::mat4 view;
-  glm::mat4 projection;
-  model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-  view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-  projection = glm::perspective(45.0f, 640.0f/480.0f, 0.1f, 100.0f);
-
-  // Get their uniform location(?)
-  //GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
-
-  //*/
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_token);
   glDrawElements(

@@ -11,7 +11,7 @@
 #include <glm/ext.hpp>
 
 #include "GameAsset.h"
-
+#include "Camera.h"
 
 class CubeAsset : public GameAsset {
 
