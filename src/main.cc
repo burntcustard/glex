@@ -13,7 +13,7 @@
 #include "GameWorld.h"
 #include "Camera.h"
 
-//Camera camera(5.0, 0.0, 0.0); // Initialise the camera at xyz coords 5,0,0.
+Camera camera(5.0, 0.0, 0.0); // Initialise the camera at xyz coords 5,0,0.
 
 /*
  * SDL timers run in separate threads.  In the timer thread
