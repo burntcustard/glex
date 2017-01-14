@@ -134,11 +134,8 @@ void CubeAsset::Draw(GLuint program_token) {
   glm::vec3 cameraFacing = glm::vec3(0.0f, 0.0f, 0.0f);
   glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
 
-  extern int testVar;
-
-  int copyOfTestVar = testVar;
-
-  glm::mat4 view = camera.GetView();
+  //glm::mat4 view = camera.GetView();
+  glm::mat4 view = glm::lookAt(cameraLocation, cameraFacing, cameraUp);
 
   glm::mat4 projection;
   projection = glm::perspective(45.0f, 16.0f / 9.0f, 0.1f, 100.0f);
