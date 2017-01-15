@@ -18,6 +18,7 @@ class Camera {
     glm::vec3 GetFacing();
     glm::mat4 GetView();
     glm::vec3 GetVelocity();
+    void Rotate(float, float, float); // pitch, yaw, roll, of intended rotation.
     void Move(float, float, float); // xyz intended move direction. Using floats in case we want to move "just a bit".
 
   private:

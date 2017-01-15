@@ -39,11 +39,34 @@ struct SDLWindowDeleter {
   }
 };
 
-void Update(const Uint8* keys) {
+void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
+
+  float mouseSensitivity = 0.01;
 
   float x = 0;
   float y = 0;
   float z = 0;
+
+  if (mouseDelta.x || mouseDelta.y) {
+
+    float pitch = 0; // Rotation around the x axis, i.e. looking up and down.
+    float yaw   = 0; // Rotation around the y axis, i.e. looking left and right.
+    float roll  = 0; // Rotation around the z axis, i.e. DO AN AILERON ROLL
+
+    //std::cout << mouseDelta.x << "," << mouseDelta.y << std::endl;
+
+    if (mouseDelta.x) {
+      yaw = mouseSensitivity * mouseDelta.x;
+    }
+    if (mouseDelta.y) {
+      pitch = mouseSensitivity * mouseDelta.y;
+    }
+
+    camera.Rotate(pitch, yaw, roll);
+
+  }
+
+
 
   // Keyboard handling:
 
@@ -65,8 +88,16 @@ void Update(const Uint8* keys) {
   if (keys[SDL_SCANCODE_LSHIFT]) {
     y--;
   }
+  if (keys[SDL_SCANCODE_ESCAPE]) {
+    // This is NOT a good way to exit the game. It causes errors.
+    // But it's here temporarily as a quick way to exit now that the mouse is being eaten.
+    // It's bad partly because we try to quit here, then we still try to draw 0.0001s afterwards.
+    SDL_Quit();
+  }
 
   camera.Move(x, y, z);
+
+  mouseDelta = glm::vec2(0, 0);
 
 }
 
@@ -111,11 +142,14 @@ std::shared_ptr<SDL_Window> InitWorld() {
                              , SDL_WINDOWPOS_CENTERED
                              , width
                              , height
-                             , SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+                             , SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_INPUT_GRABBED);
   if (!_window) {
     std::cout << "Failed to create SDL window: " << SDL_GetError() << std::endl;
     return nullptr;
   }
+
+  SDL_ShowCursor(0); // Hide mouse cursor
+  SDL_SetRelativeMouseMode(SDL_TRUE); // Capture mouse inside the window
 
   SDL_GLContext glContext = SDL_GL_CreateContext(_window);
   if (!glContext) {
@@ -179,10 +213,12 @@ int main(int argc, char ** argv) {
   // Pointer to a list of keys that are pressed, that automagically updates
   // every time SDL_PollEvent is (indirectly) called in the main event loop.
   const Uint8* keys = SDL_GetKeyboardState(NULL);
+  glm::vec2 mouseDelta = glm::vec2(0,0);
 
   auto mode = ParseOptions(argc, argv);
   auto window = InitWorld();
   auto game_world = std::make_shared<GameWorld>(mode);
+
   if(!window) {
     SDL_Quit();
   }
@@ -199,8 +235,13 @@ int main(int argc, char ** argv) {
         SDL_Quit();
         break;
 
+      case SDL_MOUSEMOTION:
+        mouseDelta.x = event.motion.xrel;
+        mouseDelta.y = event.motion.yrel;
+        break;
+
       case SDL_USEREVENT:
-        Update(keys);
+        Update(keys, mouseDelta);
         Draw(window, game_world);
 
         break;
