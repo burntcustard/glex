@@ -13,7 +13,9 @@
 #include "GameWorld.h"
 #include "Camera.h"
 
+// Global variables (boo)
 Camera camera(5.0, 0.0, 0.0); // Initialise the camera at xyz coords 5,0,0.
+
 
 /*
  * SDL timers run in separate threads.  In the timer thread
@@ -37,8 +39,35 @@ struct SDLWindowDeleter {
   }
 };
 
-void Update() {
-  // Here's where keyboard input and modifying the camera info will go?
+void Update(const Uint8* keys) {
+
+  float x = 0;
+  float y = 0;
+  float z = 0;
+
+  // Keyboard handling:
+
+  if (keys[SDL_SCANCODE_W]) {
+    y++;
+  }
+  if (keys[SDL_SCANCODE_A]) {
+    x--;
+  }
+  if (keys[SDL_SCANCODE_S]) {
+    y--;
+  }
+  if (keys[SDL_SCANCODE_D]) {
+    x++;
+  }
+  if (keys[SDL_SCANCODE_SPACE]) {
+    z++;
+  }
+  if (keys[SDL_SCANCODE_LSHIFT]) {
+    z--;
+  }
+
+  camera.Move(x, y, z);
+
 }
 
 void Draw(const std::shared_ptr<SDL_Window> window, const std::shared_ptr<GameWorld> game_world) {
@@ -95,7 +124,7 @@ std::shared_ptr<SDL_Window> InitWorld() {
   }
 
   // Initialise GLEW - an easy way to ensure OpenGl 3.0+
-  // The *must* be done after we have set the video mode - otherwise we have no
+  // This *must* be done after we have set the video mode - otherwise we have no
   // OpenGL context to test.
   glewInit();
   if (!glewIsSupported("GL_VERSION_3_0")) {
@@ -147,6 +176,8 @@ ApplicationMode ParseOptions (int argc, char ** argv) {
 int main(int argc, char ** argv) {
   Uint32 delay = 1000/60; // in milliseconds
 
+  const Uint8* keys = SDL_GetKeyboardState(NULL);
+
   auto mode = ParseOptions(argc, argv);
   auto window = InitWorld();
   auto game_world = std::make_shared<GameWorld>(mode);
@@ -160,17 +191,20 @@ int main(int argc, char ** argv) {
   // Add the main event loop
   SDL_Event event;
   while (SDL_WaitEvent(&event)) {
-    switch (event.type) {
-    case SDL_QUIT:
-      SDL_Quit();
-      break;
-    case SDL_USEREVENT:
-      Update();
-      Draw(window, game_world);
 
-      break;
-    default:
-      break;
+    switch (event.type) {
+      case SDL_QUIT:
+        SDL_Quit();
+        break;
+
+      case SDL_USEREVENT:
+        Update(keys);
+        Draw(window, game_world);
+
+        break;
+
+      default:
+        break;
     }
   }
 }

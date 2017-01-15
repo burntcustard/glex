@@ -130,10 +130,6 @@ void CubeAsset::Draw(GLuint program_token) {
   // Rotate the cube to it's world space rotation (i.e. around it's center point):
   model = glm::rotate(model, -5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-  glm::vec3 cameraLocation = glm::vec3(4.0f, 4.0f, 0.0f);
-  glm::vec3 cameraFacing = glm::vec3(0.0f, 0.0f, 0.0f);
-  glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, 1.0f);
-
   glm::mat4 view = camera.GetView();
 
   glm::mat4 projection;
