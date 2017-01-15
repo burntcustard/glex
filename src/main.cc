@@ -53,7 +53,7 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
     float yaw   = 0; // Rotation around the y axis, i.e. looking left and right.
     float roll  = 0; // Rotation around the z axis, i.e. DO AN AILERON ROLL
 
-    //std::cout << mouseDelta.x << "," << mouseDelta.y << std::endl;
+    std::cout << mouseDelta.x << "," << mouseDelta.y << std::endl;
 
     if (mouseDelta.x) {
       yaw = mouseSensitivity * mouseDelta.x;

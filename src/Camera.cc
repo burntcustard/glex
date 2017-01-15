@@ -15,7 +15,7 @@ Camera::~Camera() {
 void Camera::Rotate(float pitch, float yaw, float roll) {
 
   // Pitch (up and down)
-  glm::vec3 right = glm::normalize(glm::cross(upward, glm::normalize(facing))); // Get sideways direction
+  glm::vec3 right = glm::normalize(glm::cross(upward, facing)); // Get sideways direction
   glm::vec3 tmpFacing = glm::vec3(glm::normalize(glm::rotate(pitch, right) * glm::normalize(glm::vec4(facing, 0.0))));
   glm::vec3 tmpUpward = glm::normalize(glm::cross(tmpFacing, right));
   // Stop being able to flip:
