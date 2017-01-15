@@ -122,8 +122,6 @@ void CubeAsset::Draw(GLuint program_token) {
   // Change the value of the unifom to the cube's color:
   glUniform4f(uniColor, color[0], color[1], color[2], color[3]);
 
-  // Model view projection matrices testing - should be in GameAsset/main rather than just CubeAsset?...
-
   glm::mat4 model;
   // Move the cube to it's world space coordinates:
   model = glm::translate(model, glm::vec3(coords.x, coords.y, coords.z));

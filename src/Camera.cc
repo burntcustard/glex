@@ -44,12 +44,15 @@ void Camera::Move(float x, float y, float z) {
   }
   */
 
+  // Move the camera forward and backward in relation to where it's facing:
   if (direction.z) {
     coords += speed * direction.z * facing;
   }
+  // Move the camera left and right in relation to where it's facing:
   if (direction.x) {
     coords += speed * direction.x * glm::normalize(glm::cross(facing, upward));
   }
+  // Move the camera up and down in relation to the world:
   if (direction.y) {
     coords.y += speed * direction.y;
   }

@@ -12,7 +12,7 @@
 class Camera {
 
   public:
-    Camera(float, float, float);
+    Camera(float, float, float); // Camera placed at xyz coords passed to the constructor.
     ~Camera();
     glm::vec3 GetCoords();
     glm::vec3 GetFacing();
