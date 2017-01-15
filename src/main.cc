@@ -48,22 +48,22 @@ void Update(const Uint8* keys) {
   // Keyboard handling:
 
   if (keys[SDL_SCANCODE_W]) {
-    y++;
+    z++;
   }
   if (keys[SDL_SCANCODE_A]) {
     x--;
   }
   if (keys[SDL_SCANCODE_S]) {
-    y--;
+    z--;
   }
   if (keys[SDL_SCANCODE_D]) {
     x++;
   }
   if (keys[SDL_SCANCODE_SPACE]) {
-    z++;
+    y++;
   }
   if (keys[SDL_SCANCODE_LSHIFT]) {
-    z--;
+    y--;
   }
 
   camera.Move(x, y, z);
@@ -176,6 +176,8 @@ ApplicationMode ParseOptions (int argc, char ** argv) {
 int main(int argc, char ** argv) {
   Uint32 delay = 1000/60; // in milliseconds
 
+  // Pointer to a list of keys that are pressed, that automagically updates
+  // every time SDL_PollEvent is (indirectly) called in the main event loop.
   const Uint8* keys = SDL_GetKeyboardState(NULL);
 
   auto mode = ParseOptions(argc, argv);
