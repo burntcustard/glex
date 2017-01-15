@@ -213,6 +213,9 @@ int main(int argc, char ** argv) {
   // Pointer to a list of keys that are pressed, that automagically updates
   // every time SDL_PollEvent is (indirectly) called in the main event loop.
   const Uint8* keys = SDL_GetKeyboardState(NULL);
+
+  bool quit = false;
+
   glm::vec2 mouseDelta = glm::vec2(0,0);
 
   auto mode = ParseOptions(argc, argv);
@@ -228,26 +231,32 @@ int main(int argc, char ** argv) {
 
   // Add the main event loop
   SDL_Event event;
-  while (SDL_WaitEvent(&event)) {
 
-    switch (event.type) {
-      case SDL_QUIT:
-        SDL_Quit();
-        break;
+  while (!quit) {
 
-      case SDL_MOUSEMOTION:
-        mouseDelta.x = event.motion.xrel;
-        mouseDelta.y = event.motion.yrel;
-        break;
+    while (SDL_PollEvent(&event)) {
 
-      case SDL_USEREVENT:
-        Update(keys, mouseDelta);
-        Draw(window, game_world);
+      //std::cout << "beep";
 
-        break;
+      switch (event.type) {
+        case SDL_QUIT:
+          SDL_Quit();
+          break;
 
-      default:
-        break;
+        case SDL_MOUSEMOTION:
+          mouseDelta.x = event.motion.xrel;
+          mouseDelta.y = event.motion.yrel;
+          break;
+
+        case SDL_USEREVENT:
+          Update(keys, mouseDelta);
+          Draw(window, game_world);
+
+          break;
+
+        default:
+          break;
+      }
     }
   }
 }
