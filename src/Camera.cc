@@ -4,7 +4,7 @@
 
 Camera::Camera(float x, float y, float z) {
   coords = glm::vec3(x, y, z);
-  facing = glm::normalize(-coords); // Defaults to facing towards the center of the world.
+  facing = -glm::normalize(coords); // Defaults to facing towards the center of the world.
   upward = glm::vec3(0, 1, 0); // Default y is up (the world goes up)
 }
 
