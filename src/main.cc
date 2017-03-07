@@ -89,9 +89,11 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
     x++;
   }
   if (keys[SDL_SCANCODE_SPACE]) {
+	heldKeys += "[SPACE]";
     y++;
   }
   if (keys[SDL_SCANCODE_LSHIFT]) {
+	heldKeys += "[SHIFT]";
     y--;
   }
   if (keys[SDL_SCANCODE_ESCAPE]) {
@@ -258,7 +260,7 @@ int main(int argc, char ** argv) {
           break;
 
         case SDL_USEREVENT:
-          heldKeys.resize(8, ' ');
+          heldKeys.resize(20, ' '); // Assuming the held keys line will be < 20 chars...
           std::cout << "\rKeys pressed: " << heldKeys << std::flush;
           Update(keys, mouseDelta);
           Draw(window, game_world);
