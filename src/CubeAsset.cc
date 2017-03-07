@@ -113,9 +113,9 @@ void CubeAsset::Draw(GLuint program_token) {
   checkGLError();
 
   // Grab the location of the coords uniform:
-  GLint uniCoords = glGetUniformLocation(program_token, "cube_coords");
+  //GLint uniCoords = glGetUniformLocation(program_token, "cube_coords");
   // Change the value of the uniform to the cube's coordinates:
-  glUniform3f(uniCoords, coords.x, coords.y, coords.z);
+  //glUniform3f(uniCoords, coords.x, coords.y, coords.z);
 
   // Grab the location of the fragment color uniform:
   GLint uniColor = glGetUniformLocation(program_token, "cube_color");
@@ -124,7 +124,7 @@ void CubeAsset::Draw(GLuint program_token) {
 
   glm::mat4 model;
   // Move the cube to it's world space coordinates:
-  model = glm::translate(model, glm::vec3(coords.x, coords.y, coords.z));
+  model = glm::translate(model, coords);
   // Rotate the cube to it's world space rotation (i.e. around it's center point):
   //model = glm::rotate(model, -5.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 

@@ -53,7 +53,7 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
     float yaw   = 0; // Rotation around the y axis, i.e. looking left and right.
     float roll  = 0; // Rotation around the z axis, i.e. DO AN AILERON ROLL
 
-    std::cout << mouseDelta.x << "," << mouseDelta.y << std::endl;
+    //std::cout << mouseDelta.x << "," << mouseDelta.y << std::endl;
 
     if (mouseDelta.x) {
       yaw = mouseSensitivity * mouseDelta.x;
@@ -72,9 +72,11 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
 
   if (keys[SDL_SCANCODE_W]) {
     z++;
+    std::cout << "\rKey pressed: W" << std::flush;
   }
   if (keys[SDL_SCANCODE_A]) {
     x--;
+    std::cout << "\rKey pressed: A" << std::flush;
   }
   if (keys[SDL_SCANCODE_S]) {
     z--;
@@ -91,7 +93,8 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
   if (keys[SDL_SCANCODE_ESCAPE]) {
     // This is NOT a good way to exit the game. It causes errors.
     // But it's here temporarily as a quick way to exit now that the mouse is being eaten.
-    // It's bad partly because we try to quit here, then we still try to draw 0.0001s afterwards.
+    // It's bad partly because we try to quit here, then we still try to draw ~0.0001s afterwards.
+	std::cout << "Escape pressed, trying to quit..." << std::endl;
     SDL_Quit();
   }
 
@@ -232,15 +235,17 @@ int main(int argc, char ** argv) {
   // Add the main event loop
   SDL_Event event;
 
-  while (!quit) {
+  //while (!quit) {
 
-    while (SDL_PollEvent(&event)) {
+    while (SDL_WaitEvent(&event)) {
 
       //std::cout << "beep";
 
       switch (event.type) {
         case SDL_QUIT:
           SDL_Quit();
+          quit = true;
+          std::cout << "SDL_Quit... ing" << std::endl;
           break;
 
         case SDL_MOUSEMOTION:
@@ -258,5 +263,6 @@ int main(int argc, char ** argv) {
           break;
       }
     }
-  }
+  //}
+
 }

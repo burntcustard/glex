@@ -8,7 +8,7 @@
 in vec3 position;
 out vec4 frag_color;
 
-uniform vec3 cube_coords;
+//uniform vec3 cube_coords;
 uniform vec4 cube_color;
 
 // model/view/projection matrices passed in:
