@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <memory>
+#include <string>
 
 #include <boost/program_options.hpp>
 
@@ -15,7 +16,7 @@
 
 // Global variables (boo)
 Camera camera(5.0, 0.0, 0.0); // Initialise the camera at xyz coords 5,0,0.
-
+std::string heldKeys = "";
 
 /*
  * SDL timers run in separate threads.  In the timer thread
@@ -69,19 +70,22 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
 
 
   // Keyboard handling:
+  heldKeys = "";
 
   if (keys[SDL_SCANCODE_W]) {
+	heldKeys += "W";
     z++;
-    std::cout << "\rKey pressed: W" << std::flush;
   }
   if (keys[SDL_SCANCODE_A]) {
+	heldKeys += "A";
     x--;
-    std::cout << "\rKey pressed: A" << std::flush;
   }
   if (keys[SDL_SCANCODE_S]) {
+	heldKeys += "S";
     z--;
   }
   if (keys[SDL_SCANCODE_D]) {
+	heldKeys += "D";
     x++;
   }
   if (keys[SDL_SCANCODE_SPACE]) {
@@ -94,7 +98,7 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
     // This is NOT a good way to exit the game. It causes errors.
     // But it's here temporarily as a quick way to exit now that the mouse is being eaten.
     // It's bad partly because we try to quit here, then we still try to draw ~0.0001s afterwards.
-	std::cout << "Escape pressed, trying to quit..." << std::endl;
+	std::cout << "\nEscape pressed, trying to quit..." << std::endl;
     SDL_Quit();
   }
 
@@ -254,6 +258,8 @@ int main(int argc, char ** argv) {
           break;
 
         case SDL_USEREVENT:
+          heldKeys.resize(8, ' ');
+          std::cout << "\rKeys pressed: " << heldKeys << std::flush;
           Update(keys, mouseDelta);
           Draw(window, game_world);
 
