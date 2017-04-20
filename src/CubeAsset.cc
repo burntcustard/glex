@@ -5,10 +5,11 @@
 extern Camera camera;
 
 
-CubeAsset::CubeAsset(float x, float y, float z, float r, float g, float b) {
+CubeAsset::CubeAsset(float x, float y, float z, float w, float l, float h, float r, float g, float b) {
 
-  coords = glm::vec3(x, y, z);
-  color = glm::vec4(r, g, b, 1.0f);
+  coords = glm::vec3(x, y, z);      // x, y, z world coordinates.
+  size   = glm::vec3(w, l, h);      // width, length, height.
+  color  = glm::vec4(r, g, b, 1.0); // red, green, blue, alpha values.
 
   //std::cout << "coords: " << coords[0] << "," << coords[1] << "," << coords[2] << std::endl;
 
@@ -25,9 +26,17 @@ CubeAsset::CubeAsset(float x, float y, float z, float r, float g, float b) {
     1, 1, 1  // 7
   };
 
-  // Realign the cube so that the centre is at coordinates "0,0,0":
+  // Realign and resize the cube so the centre is at coordinates "0,0,0":
   for( int i = 0; i < vertex_buffer.size() && i < 99; i++ ) {
+
     vertex_buffer[i] = vertex_buffer[i] - 0.5;
+
+    switch (i % 3) {
+      case 0: vertex_buffer[i] *= size[0]; break;
+      case 1: vertex_buffer[i] *= size[1]; break;
+      case 2: vertex_buffer[i] *= size[2]; break;
+    }
+
   	//std::cout << "vertex_buffer " << i << " is now: " << vertex_buffer[i] << std::endl;
   }
 

@@ -16,9 +16,10 @@
 class CubeAsset : public GameAsset {
 
   public:
-    CubeAsset(float, float, float, float, float, float);
+    CubeAsset(float, float, float, float, float, float, float, float, float);
     ~CubeAsset();
     glm::vec3 coords;
+    glm::vec3 size;
     glm::vec4 color;
   virtual void Draw(GLuint);
 

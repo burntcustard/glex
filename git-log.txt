@@ -1,0 +1,309 @@
+commit 8a3886234264584352d7cb4a0b774231173a1b23
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 15:33:44 2017 +0000
+
+    Minor text fixes
+
+commit 4f68596779e85416c77561b82e352dea389ac5ca
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 15:26:21 2017 +0000
+
+    Minor text fixes, and trying out cppcheck
+
+commit a08a87dd88996ca96936638bb1c07b73f33efb51
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 14:10:25 2017 +0000
+
+    Trying SDL_PollEvent rather than SDL_WaitEvent to lower input lag. Seems to get worse over time (memory leak?...)
+
+commit 42d47352fc695d6c6ed03aae3941f407c0f46cfd
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 12:43:40 2017 +0000
+
+    Trying to figure out what's causing the input lag :(
+
+commit 8c920a82880b52803749544dfad9da595311422a
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 07:54:14 2017 +0000
+
+    Camera mouse control. Finished the free-cam style camera
+
+commit 92ff576396c468d60da1bdc8b3f67da775eeae7d
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 02:30:37 2017 +0000
+
+    WASD/space/shift can now move the camera around
+
+commit 6c4f45290a014eb2a41672c528d6e32e1c9d2a21
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sun Jan 15 01:15:51 2017 +0000
+
+    Super smooth keyboard input handling with SDL_GetKeyboardState
+
+commit 7a9308e4eb19f5c98e16eeb0a18db9a7f9366802
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sat Jan 14 22:53:43 2017 +0000
+
+    Added Camera files to makefile, so it builds properly now, and the _view_ part of the model-view-projection is done with camera.GetView()
+
+commit 1153243d4739884fe56613826ed6dbe6355c2d63
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sat Jan 14 15:19:24 2017 +0000
+
+    Removed test global variable. Still trying to include Camera.h and Camera.cc in the build process
+
+commit 7224bd9bc4321b083ea99d0b158a80419e4c658a
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sat Jan 14 14:49:54 2017 +0000
+
+    Trying to create a camera, currently new files not being linked and/or compiled, so not working
+
+commit e5d38cf45951fc610c0e016857c73104d33880b3
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Mon Jan 9 13:16:03 2017 +0000
+
+    Testing alternative (better?) projection > view > model space.
+
+commit 918efe70be2dffbcb074d6c365d9e17a7eae5c48
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Sat Jan 7 04:51:40 2017 +0000
+
+    2 cubes, with different coords and colours.
+
+commit 317c2a30c339ec4add104aecf3f24a94bf73f3c1
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Fri Jan 6 22:49:59 2017 +0000
+
+    Readded basic rotation transformations
+
+commit b404c4d0eebe9ec5fc622aae11c2996f987410da
+Author: burntcustard <burntcustard@gmail.com>
+Date:   Fri Jan 6 21:35:09 2017 +0000
+
+    Another complete re-do, pre Eclipse setup
+
+commit ce3cb37a33c5d8d179c89cbcf223254994f355f2
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Jan 4 11:21:01 2016 +0000
+
+    Changed to intitializer list as per cppcheck linting messages.
+
+commit 640e10e0e2028705729a2a49820a92c259aef4b1
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Jan 4 10:54:48 2016 +0000
+
+    Changed readme to reflect that we now only support >= F22
+
+commit 3dbf91e6406d3fe9018db956f081814f49aa361d
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Jan 4 10:51:54 2016 +0000
+
+    Added CI build description.
+
+commit 8f4bd2e58c95916b782ecbe51ea26768cb8078ec
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Oct 5 09:41:42 2015 +0100
+
+    Update bundled version of boost.m4
+
+commit 112335204306025257af99c082c0550251fffe88
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Oct 27 10:08:59 2014 +0000
+
+    Added licence
+
+commit 999746c640e9bed4a1f62f0b3e9f8f9cff7e8b7f
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Oct 27 08:36:30 2014 +0000
+
+    Improved documentation on GameAssetManager and others.
+
+commit ba6de4b2effa90f46ceac87c766781fc8ab030c2
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Sun Oct 26 20:36:36 2014 +0000
+
+    Fixed spelling mistake.
+
+commit babe72f246e8865517963609621ab8c5fb6b43fd
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Sep 22 08:59:18 2014 +0100
+
+    Updated readme with DEBUG build instructions.
+
+commit bb227310eba73838f762d5a3ef4645cf8edb081e
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 14:34:57 2014 +0100
+
+    Added missing header file
+
+commit 47db162b2e68198e1b410219d42c3537a5135340
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 14:14:42 2014 +0100
+
+    Added readme
+
+commit 5e7554954a354af6e0e471824849cdd87228ca51
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 13:37:12 2014 +0100
+
+    Corrected projection matrix in shaders.
+
+commit 72f84d0b974d2135fec7d780bf318d125192601c
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 13:32:04 2014 +0100
+
+    Removed camera (no need to introduce this complexity at this stage)
+
+commit 7c116b59e3e854c64e797d279f77045d3225e6b9
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 13:31:48 2014 +0100
+
+    Enable OpenGL depth testing
+
+commit 197d7684e2bf74019e37818b89a86140d4bbe6b3
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 12:56:28 2014 +0100
+
+    Added camera to shaders and better validation to Cube draw method.
+
+commit 78f60fab9ba9f8e39a759b2af3c5170255fefa07
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 10:52:57 2014 +0100
+
+    checkGLError only has an implementation if -DDEBUG is provided.
+    Passing all of the vertex & element buffer to the GPU now.
+
+commit 5ffd3fdbfe2ecba02cf94157e82529d411fffc7d
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Thu Sep 18 10:34:11 2014 +0100
+
+    Changed background colour and window title.
+
+commit 4f863175a41f4f641233d0521dcac30dacc446cc
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 15:55:55 2014 +0100
+
+    Added rotate and scale shaders as copies of the translate one.
+
+commit fec829cbf8f2a6f71f37b0d20a65e734e4f9d737
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 15:46:27 2014 +0100
+
+    Add command line parsing.
+
+commit 63c92c77c6861f7bfc931c3a504b346b0f47d6ce
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 13:44:39 2014 +0100
+
+    Clean up the array initialisation in CubeAsset.
+
+commit 7cc6748351b5d9fa46d7609c54fbd98f073f42d7
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 13:44:26 2014 +0100
+
+    Change window title
+
+commit 455ed5e36cc98d7a3badb5b6bbc6fdc9086d2050
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 13:43:49 2014 +0100
+
+    Don't take a colour from the user, hardcode it.
+
+commit a28faa4f1d2edf74e362bd56ca220dd16d48829c
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 13:37:06 2014 +0100
+
+    Don't pass a GLuint * to the CPU and tell the thing to draw GL_UNSIGNED_SHORT!
+
+commit ddea9f4e46ff2e17d4c179d3373cf1c9b0f62825
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 12:46:59 2014 +0100
+
+    Disable backface culling for debug purposes.
+
+commit 702252414662d8e63f33715261399c8cc8a4767a
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 12:46:42 2014 +0100
+
+    Include cerr and endl in CubeAsset
+
+commit e1c66633fdb69b41bd4a755034acac09338d57b0
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 12:46:06 2014 +0100
+
+    Make GL error reporting more verbose.
+
+commit 077f812911db7e552ef3abc45b039097deac9439
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 12:45:33 2014 +0100
+
+    Put the near and far clipping planes "in front" of the user.
+
+commit 13a828a3506bdac756ca7422bc2ec9da5f62d488
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 11:47:18 2014 +0100
+
+    Create a GameWorld that contains a GameAssetManager
+
+commit 353c9bcae2e7fc5b119c0a5619f92f63c4494034
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 11:46:55 2014 +0100
+
+    Downgrade to GLSL 1.3 due to Intel hardware support.
+
+commit 9a4aec42c33c4cd04b7e69c1bc7cb77f5d1802f7
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 11:46:12 2014 +0100
+
+    Improved the feedback when a shader fails to compile.
+    Actually compile shaders in constructor.
+
+commit d05c9f5806520e062b3417532fd56069b50074c3
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 11:15:11 2014 +0100
+
+    Some occurances of window should have been _window.
+
+commit 771bdff708a5d53092293cf056532ac671a9d7b4
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 11:01:11 2014 +0100
+
+    GameAssetManager is no-longer a singleton
+    Added GameAssetManager to GameWorld
+
+commit 174f1e6387c1517366e3e782dd227ed2a16cc7d4
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Wed Sep 17 10:09:50 2014 +0100
+
+    Initialise some Cube buffers on GPU
+
+commit cae65f74c3c65320e60dacf77540962aec2bc655
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Tue Sep 16 11:19:03 2014 +0100
+
+    Added a partial cube as an asset.
+
+commit dbc9c9421fc1a2a1e4226940382810b88d20548d
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Tue Sep 16 10:43:07 2014 +0100
+
+    Don't return -1 as a uint, just bail.
+
+commit 7e6ecdf261295486c4a72d7e84113a70bbf4ec09
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Tue Sep 16 10:39:46 2014 +0100
+
+    Added shader loading code to GameAssetManager
+      * Moved GL defines to the make system
+
+commit 6f2c84586f6972e9955ae366cb43fb68849821dd
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Sep 15 14:25:35 2014 +0100
+
+    Stubbed out some of the management structure.
+
+commit 7bac8c9911fff7382b8337e1bbd26f5a58eed6f1
+Author: Aidan Delaney <aidan@ontologyengineering.org>
+Date:   Mon Sep 15 12:36:09 2014 +0100
+
+    initial boilerplate
