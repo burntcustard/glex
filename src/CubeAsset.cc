@@ -39,7 +39,7 @@ CubeAsset::CubeAsset(float x, float y, float z, float w, float l, float h, float
       case 2: vertex_buffer[i] *= size[2]; break;
     }
 
-  	std::cout << "vertex_buffer " << i << " is now: " << vertex_buffer[i] << std::endl;
+  	//std::cout << "vertex_buffer " << i << " is now: " << vertex_buffer[i] << std::endl;
   }
 
   // List of coordinates of the triangles that make up the cube, using
