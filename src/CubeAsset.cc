@@ -29,7 +29,9 @@ CubeAsset::CubeAsset(float x, float y, float z, float w, float l, float h, float
   // Realign and resize the cube so the centre is at coordinates "0,0,0":
   for( int i = 0; i < vertex_buffer.size() && i < 99; i++ ) {
 
-    vertex_buffer[i] = vertex_buffer[i] - 0.5;
+    if (i % 3 != 2) {
+      vertex_buffer[i] = vertex_buffer[i] - 0.5;
+    }
 
     switch (i % 3) {
       case 0: vertex_buffer[i] *= size[0]; break;
@@ -37,7 +39,7 @@ CubeAsset::CubeAsset(float x, float y, float z, float w, float l, float h, float
       case 2: vertex_buffer[i] *= size[2]; break;
     }
 
-  	//std::cout << "vertex_buffer " << i << " is now: " << vertex_buffer[i] << std::endl;
+  	std::cout << "vertex_buffer " << i << " is now: " << vertex_buffer[i] << std::endl;
   }
 
   // List of coordinates of the triangles that make up the cube, using

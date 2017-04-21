@@ -15,7 +15,7 @@
 #include "Camera.h"
 
 // Global variables (boo)
-Camera camera(5.0, 0.0, 0.0); // Initialise the camera at xyz coords 5,0,0.
+Camera camera(0.0, 0.0, 5.0); // Initialise the camera at xyz coords #,#,#
 std::string heldKeys = "";
 
 /*
@@ -40,7 +40,15 @@ struct SDLWindowDeleter {
   }
 };
 
+
+
+/**
+ * Updates that happen 60 times a second.
+ * TODO: Split into several individual files...
+ */
 void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
+
+  // Keyboard and mouse input:
 
   float mouseSensitivity = 0.01;
 
@@ -67,14 +75,13 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
 
   }
 
-
-
-  // Keyboard handling:
   heldKeys = "";
+
+  // Is a key held down? If it is, add it to the "held keys" list.
 
   if (keys[SDL_SCANCODE_W]) {
 	heldKeys += "W";
-    z++;
+    y++;
   }
   if (keys[SDL_SCANCODE_A]) {
 	heldKeys += "A";
@@ -82,19 +89,35 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
   }
   if (keys[SDL_SCANCODE_S]) {
 	heldKeys += "S";
-    z--;
+    y--;
   }
   if (keys[SDL_SCANCODE_D]) {
 	heldKeys += "D";
     x++;
   }
+  if (keys[SDL_SCANCODE_UP]) {
+  heldKeys += "[UP]";
+    y++;
+  }
+  if (keys[SDL_SCANCODE_LEFT]) {
+  heldKeys += "[LEFT]";
+    x--;
+  }
+  if (keys[SDL_SCANCODE_DOWN]) {
+  heldKeys += "[DOWN]";
+    y--;
+  }
+  if (keys[SDL_SCANCODE_RIGHT]) {
+  heldKeys += "[RIGHT]";
+    x++;
+  }
   if (keys[SDL_SCANCODE_SPACE]) {
 	heldKeys += "[SPACE]";
-    y++;
+    z++;
   }
   if (keys[SDL_SCANCODE_LSHIFT]) {
 	heldKeys += "[SHIFT]";
-    y--;
+    z--;
   }
   if (keys[SDL_SCANCODE_ESCAPE]) {
     // This is NOT a good way to exit the game. It causes errors.
@@ -104,9 +127,25 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
     SDL_Quit();
   }
 
-  camera.Move(x, y, z);
+  // Make sure move speed isn't doubled if for
+  // example, right arrow key and 'd' are held:
+  if (x >  1) { x =  1; }
+  if (y >  1) { y =  1; }
+  if (z >  1) { z =  1; }
+  if (x < -1) { x = -1; }
+  if (y < -1) { y = -1; }
+  if (z < -1) { z = -1; }
+
+  // Normalize x/y movement (so travelling vertically and horizontally
+  // doesn't result in moving faster than intended:
+  if (x != 0 || y != 0) {
+    glm::vec3 movement = glm::normalize(glm::vec3(x, y, 0));
+    camera.TopDownMove(movement.x, movement.y, z);
+  }
 
   mouseDelta = glm::vec2(0, 0);
+
+  // End of keyboard and mouse stuff
 
 }
 

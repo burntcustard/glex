@@ -31,7 +31,7 @@ void Camera::Rotate(float pitch, float yaw, float roll) {
 
 }
 
-void Camera::Move(float x, float y, float z) {
+void Camera::FPSMove(float x, float y, float z) {
 
   float speed = 0.01;
 
@@ -56,6 +56,16 @@ void Camera::Move(float x, float y, float z) {
   if (direction.y) {
     coords.y += speed * direction.y;
   }
+
+}
+
+void Camera::TopDownMove(float x, float y, float z) {
+
+  float speed = 0.01;
+
+  glm::vec3 direction = glm::vec3(x, y, z);
+
+  coords += speed * direction;
 
 }
 
