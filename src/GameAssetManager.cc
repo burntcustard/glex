@@ -63,12 +63,28 @@ void GameAssetManager::AddAsset(std::shared_ptr<GameAsset> the_asset) {
 }
 
 /**
+ * Updates each GameAsset in the scene graph.
+ */
+void GameAssetManager::Update(float x, float y, float z) {
+  /*
+  for(auto ga: draw_list) {
+    ga->Update(program_token);
+  }
+  */
+  draw_list[0]->Move(x, y, z);
+}
+
+/**
  * Draws each GameAsset in the scene graph.
  */
 void GameAssetManager::Draw() {
   for(auto ga: draw_list) {
     ga->Draw(program_token);
   }
+}
+
+void GameAssetManager::Move(int i, float x, float y, float z) {
+  draw_list[i]->Move(x, y, z);
 }
 
 /**

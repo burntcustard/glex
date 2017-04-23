@@ -176,3 +176,22 @@ void CubeAsset::Draw(GLuint program_token) {
 
   glDisableVertexAttribArray(position_attrib);
 }
+
+
+/**
+ * Move the cube asset in the gameworld.
+ * TODO: Include some sort of max speed,
+ * diagonal movement speed reduction, and
+ * potentially collision detection (don't move if collides with building?)
+ */
+void CubeAsset::Move(float x, float y, float z) {
+
+  // Different cube assets will have different speeds?
+  // E.g. the zombie cubes should be slower than player cube?
+  float speed = 0.01;
+
+  coords.x += x * speed;
+  coords.y += y * speed;
+  coords.z += z * speed;
+
+}

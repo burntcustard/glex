@@ -46,15 +46,11 @@ struct SDLWindowDeleter {
  * Updates that happen 60 times a second.
  * TODO: Split into several individual files...
  */
-void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
+void Update(const Uint8* keys, glm::vec2 &mouseDelta, const std::shared_ptr<GameWorld> game_world) {
 
   // Keyboard and mouse input:
 
   float mouseSensitivity = 0.01;
-
-  float x = 0;
-  float y = 0;
-  float z = 0;
 
   if (mouseDelta.x || mouseDelta.y) {
 
@@ -77,72 +73,14 @@ void Update(const Uint8* keys, glm::vec2 &mouseDelta) {
 
   heldKeys = "";
 
-  // Is a key held down? If it is, add it to the "held keys" list.
-
-  if (keys[SDL_SCANCODE_W]) {
-    heldKeys += "W";
-    y++;
-  }
-  if (keys[SDL_SCANCODE_A]) {
-    heldKeys += "A";
-    x--;
-  }
-  if (keys[SDL_SCANCODE_S]) {
-    heldKeys += "S";
-    y--;
-  }
-  if (keys[SDL_SCANCODE_D]) {
-    heldKeys += "D";
-    x++;
-  }
-  if (keys[SDL_SCANCODE_UP]) {
-    heldKeys += "[UP]";
-    y++;
-  }
-  if (keys[SDL_SCANCODE_LEFT]) {
-    heldKeys += "[LEFT]";
-    x--;
-  }
-  if (keys[SDL_SCANCODE_DOWN]) {
-    heldKeys += "[DOWN]";
-    y--;
-  }
-  if (keys[SDL_SCANCODE_RIGHT]) {
-    heldKeys += "[RIGHT]";
-    x++;
-  }
-  if (keys[SDL_SCANCODE_SPACE]) {
-    heldKeys += "[SPACE]";
-    z++;
-  }
-  if (keys[SDL_SCANCODE_LSHIFT]) {
-    heldKeys += "[SHIFT]";
-    z--;
-  }
   if (keys[SDL_SCANCODE_ESCAPE]) {
     // This is NOT a good way to exit the game. It causes errors.
     // But it's here temporarily as a quick way to exit now that the mouse is being eaten.
-    // It's bad partly because if we try to quit here, then we still try to draw ~0.0001s afterwards.
+    // It's bad partly because if we try to quit here, then we still try to draw ~0.001s afterwards.
     std::cout << "\nEscape pressed, trying to quit..." << std::endl;
     SDL_Quit();
-  }
-
-  // Make sure move speed isn't doubled if for
-  // example, right arrow key and 'd' are held:
-  if (x >  1) { x =  1; }
-  if (y >  1) { y =  1; }
-  if (z >  1) { z =  1; }
-  if (x < -1) { x = -1; }
-  if (y < -1) { y = -1; }
-  if (z < -1) { z = -1; }
-
-  // Normalize x/y movement (so travelling vertically and horizontally
-  // doesn't result in moving faster than intended:
-  if (x != 0 || y != 0) {
-    glm::vec3 movement = glm::normalize(glm::vec3(x, y, 0));
-    camera.TopDownMove(movement.x, movement.y, z);
   } else {
-    camera.TopDownMove(0, 0, z);
+    game_world->Update(keys, heldKeys, mouseDelta, camera);
   }
 
   mouseDelta = glm::vec2(0, 0);
@@ -303,7 +241,7 @@ int main(int argc, char ** argv) {
         case SDL_USEREVENT:
           heldKeys.resize(20, ' '); // Assuming the held keys line will be < 20 chars...
           //std::cout << "\rKeys pressed: " << heldKeys << std::flush;
-          Update(keys, mouseDelta);
+          Update(keys, mouseDelta, game_world);
           Draw(window, game_world);
 
           break;

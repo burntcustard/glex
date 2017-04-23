@@ -27,6 +27,8 @@ class GameAssetManager {
   void operator=(GameAssetManager const&); // assignment
   void AddAsset(std::shared_ptr<GameAsset>);
   void Draw();
+  void Update(float, float, float);
+  void Move(int, float, float, float); // Move the GameAsset at this index int
 
  private:
   GLuint CreateGLProgram(std::string &, std::string &);

@@ -96,5 +96,5 @@ void main() {
       		* view
                 * model
                 * vec4(position, 1.0f);
-      frag_color = cube_color * 0.7; // Makes the cubes a bit darker. Just experimenting for now!
+      frag_color = cube_color * 0.8; // Makes the cubes a bit darker. Just experimenting for now!
 }

@@ -22,6 +22,7 @@ class CubeAsset : public GameAsset {
     glm::vec3 size;
     glm::vec4 color;
   virtual void Draw(GLuint);
+  virtual void Move(float, float, float);
 
   private:
     GLuint element_buffer_length;

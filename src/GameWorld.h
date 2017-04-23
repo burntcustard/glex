@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <GL/gl.h>
+#include <SDL2/SDL.h> // Needed for Uint8 for holding keys?
 
 #include "common.h"
 #include "GameAssetManager.h"
@@ -28,6 +29,13 @@ class GameWorld {
    * Calling Draw() will draw the entire world.
    */
   void Draw();
+
+  /**
+   * Calling Update() will update the entire world.
+   * Moving assets that are supposed to move, etc.
+   */
+  void Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mouseDelta, Camera &camera);
+
  private:
   std::shared_ptr<GameAssetManager> asset_manager;
 };

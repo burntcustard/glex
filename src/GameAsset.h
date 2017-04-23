@@ -8,6 +8,7 @@
 class GameAsset {
  public:
   virtual void Draw(GLuint) = 0;
+  virtual void Move(float, float, float) = 0;
 
 };
 
