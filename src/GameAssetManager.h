@@ -11,6 +11,7 @@
 #include <GL/gl.h>
 
 #include "common.h"
+#include "Camera.h"
 #include "GameAsset.h"
 
 /**
@@ -26,6 +27,7 @@ class GameAssetManager {
   GameAssetManager(GameAssetManager const&&); // move constructor
   void operator=(GameAssetManager const&); // assignment
   void AddAsset(std::shared_ptr<GameAsset>);
+  std::shared_ptr<GameAsset> GetAssetRef(int);
   void Draw();
   void Update(float, float, float);
   void Move(int, float, float, float); // Move the GameAsset at this index int

@@ -1,12 +1,17 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <memory>
 #include <vector>
 #include <iostream>
 
+#include <math.h>
 #include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+
+#include "CubeAsset.h"
+#include "GameAsset.h"
 
 
 class Camera {
@@ -21,6 +26,7 @@ class Camera {
     void Rotate(float, float, float); // pitch, yaw, roll, of intended rotation.
     void FPSMove(float, float, float); // xyz intended move direction. xy in relation to camera, z in relation to world.
     void TopDownMove(float, float, float); // xyz intended move direction. All in relation to world.
+    void Follow(std::shared_ptr<GameAsset>);
 
   private:
     glm::vec3 coords; // The world-space xyz coordinates of the camera.

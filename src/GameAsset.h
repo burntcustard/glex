@@ -7,8 +7,9 @@
 
 class GameAsset {
  public:
-  virtual void Draw(GLuint) = 0;
-  virtual void Move(float, float, float) = 0;
+ virtual glm::vec3 GetCoords() = 0;
+ virtual void Draw(GLuint) = 0;
+ virtual void Move(float, float, float) = 0;
 
 };
 

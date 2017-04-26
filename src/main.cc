@@ -15,7 +15,7 @@
 #include "Camera.h"
 
 // Global variables (boo)
-Camera camera(0.0, 0.0, 5.0); // Initialise the camera at xyz coords #,#,#
+Camera camera(0.0, 0.0, 4.0); // Initialise the camera at xyz coords #,#,#
 std::string heldKeys = "";
 
 /*

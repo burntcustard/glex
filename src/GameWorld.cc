@@ -101,6 +101,7 @@ void GameWorld::Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mous
   if (playerInput.y < -1) { playerInput.y = -1; }
   if (playerInput.z < -1) { playerInput.z = -1; }
 
+  /*
   // Normalize x/y movement (so travelling vertically and horizontally
   // doesn't result in moving faster than intended:
   if (playerInput.x != 0 || playerInput.y != 0) {
@@ -110,9 +111,18 @@ void GameWorld::Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mous
   } else {
     camera.TopDownMove(0, 0, playerInput.z);
   }
+  */
 
-  // Update the game and move player in x and y axis (but not z):
+  // Move the camera higher or lower:
+  camera.TopDownMove(0, 0, playerInput.z);
+
+  // Update the game - moves player in x and y axis (but not z),
+  // and makes the camera follow the player cube:
   asset_manager->Update(playerInput.x, playerInput.y, 0);
+
+  // Make the camera follow the player:
+  camera.Follow(asset_manager->GetAssetRef(0));
+
 }
 
 void GameWorld::Draw() {

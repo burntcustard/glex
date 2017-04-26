@@ -18,13 +18,15 @@ class CubeAsset : public GameAsset {
   public:
     CubeAsset(float, float, float, float, float, float, float, float, float);
     ~CubeAsset();
-    glm::vec3 coords;
-    glm::vec3 size;
+    glm::vec3 GetCoords();
+    glm::vec3 GetSize();
     glm::vec4 color;
   virtual void Draw(GLuint);
   virtual void Move(float, float, float);
 
   private:
+    glm::vec3 coords;
+    glm::vec3 size;
     GLuint element_buffer_length;
     GLuint vertex_buffer_token, element_buffer_token;
 

@@ -62,17 +62,30 @@ void GameAssetManager::AddAsset(std::shared_ptr<GameAsset> the_asset) {
   draw_list.push_back(the_asset);
 }
 
+
+
+std::shared_ptr<GameAsset> GameAssetManager::GetAssetRef(int i) {
+  return draw_list[i];
+}
+
+
+
 /**
  * Updates each GameAsset in the scene graph.
  */
 void GameAssetManager::Update(float x, float y, float z) {
-  /*
-  for(auto ga: draw_list) {
-    ga->Update(program_token);
+
+  // If x or y inputs aren't 0, move the player
+  // (and normalize so diagonal movement isn't too fast):
+  glm::vec3 movement;
+  if (x != 0 || y != 0) {
+    glm::vec3 movement = glm::normalize(glm::vec3(x, y, 0));
+    draw_list[0]->Move(movement.x, movement.y, 0);
   }
-  */
-  draw_list[0]->Move(x, y, z);
+
 }
+
+
 
 /**
  * Draws each GameAsset in the scene graph.
@@ -83,9 +96,16 @@ void GameAssetManager::Draw() {
   }
 }
 
+
+
+/**
+ * Moves a specific game asset (at i in the draw_list) around the game world.
+ */
 void GameAssetManager::Move(int i, float x, float y, float z) {
   draw_list[i]->Move(x, y, z);
 }
+
+
 
 /**
  * When given the contents of a vertex shader and fragment shader

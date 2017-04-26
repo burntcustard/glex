@@ -178,6 +178,17 @@ void CubeAsset::Draw(GLuint program_token) {
 }
 
 
+glm::vec3 CubeAsset::GetCoords() {
+  return coords;
+}
+
+
+glm::vec3 CubeAsset::GetSize() {
+  return size;
+}
+
+
+
 /**
  * Move the cube asset in the gameworld.
  * TODO: Include some sort of max speed,
@@ -188,10 +199,10 @@ void CubeAsset::Move(float x, float y, float z) {
 
   // Different cube assets will have different speeds?
   // E.g. the zombie cubes should be slower than player cube?
-  float speed = 0.01;
+  float speed = 0.02;
 
-  coords.x += x * speed;
-  coords.y += y * speed;
-  coords.z += z * speed;
+  glm::vec3 direction = glm::vec3(x, y, z);
+
+  coords += direction * speed;
 
 }
