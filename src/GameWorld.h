@@ -4,7 +4,7 @@
 #include <memory>
 
 #include <GL/gl.h>
-#include <SDL2/SDL.h> // Needed for Uint8 for holding keys?
+#include <SDL2/SDL.h> // Needed for Uint8 for holding (keyboard) keys?
 
 #include "common.h"
 #include "GameAssetManager.h"
@@ -35,8 +35,11 @@ class GameWorld {
    * Moving assets that are supposed to move, etc.
    */
   void Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mouseDelta, Camera &camera);
+  bool BuildingsCollisionCheck(GameAsset *asset);
+  int GetNoOfBuildings();
 
  private:
   std::shared_ptr<GameAssetManager> asset_manager;
+  int numberOfBuildings;
 };
 #endif // GAMEWORLD_H

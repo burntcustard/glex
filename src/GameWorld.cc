@@ -1,15 +1,17 @@
 #include "GameWorld.h"
 
+
+
 GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<GameAssetManager>(mode)) {
   //asset_manager->AddAsset(std::make_shared<CubeAsset>(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0));
   //asset_manager->AddAsset(std::make_shared<CubeAsset>(3.0, 0.0, 0.0, 1.0, 1.0, 2.0, 1.0, 0.0, 0.0));
 
-
   srand (time(NULL));
 
-  float i = 0;
+  numberOfBuildings = 5;
+  //std::cout << "Number of buildings at start: " << numberOfBuildings << std::endl;
 
-  // Create the player cube
+  // Create the player cube:
   asset_manager->AddAsset(std::make_shared<CubeAsset>(
       0.0, 0.0, 0.0, // Center of the game world
       0.2, 0.2, 0.2, // 0.2 size cube
@@ -18,7 +20,7 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
 
   // Create some "buildings"
 
-  for (i = 1; i <= 5; i++) {
+  for (int i = 1; i <= numberOfBuildings; i++) {
 
     // Height of the building, between 1 and 2 in increments of 0.25:
     float height = 1 + (rand() % 5) / 4.0;
@@ -37,11 +39,11 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
 
   }
 
-  // TODO: Save 'i' as the "end of the buildings" or "start of zombies" index here?
-
   // TODO: Add zombies here?
 
 }
+
+
 
 void GameWorld::Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mouseDelta, Camera &camera) {
 
@@ -101,18 +103,6 @@ void GameWorld::Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mous
   if (playerInput.y < -1) { playerInput.y = -1; }
   if (playerInput.z < -1) { playerInput.z = -1; }
 
-  /*
-  // Normalize x/y movement (so travelling vertically and horizontally
-  // doesn't result in moving faster than intended:
-  if (playerInput.x != 0 || playerInput.y != 0) {
-    glm::vec3 movement = glm::normalize(glm::vec3(playerInput.x, playerInput.y, 0));
-    camera.TopDownMove(movement.x, movement.y, playerInput.z);
-    //GameAssetManager::Move(0, 3.0f, 2.0f, 0.0f);
-  } else {
-    camera.TopDownMove(0, 0, playerInput.z);
-  }
-  */
-
   // Move the camera higher or lower:
   camera.TopDownMove(0, 0, playerInput.z);
 
@@ -123,8 +113,53 @@ void GameWorld::Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mous
   // Make the camera follow the player:
   camera.Follow(asset_manager->GetAssetRef(0));
 
+  //std::cout << numberOfBuildings << std::endl;
+
 }
+
+
 
 void GameWorld::Draw() {
   asset_manager->Draw();
+}
+
+
+
+int GameWorld::GetNoOfBuildings() {
+  return numberOfBuildings;
+}
+
+
+
+/**
+ * Checks if an asset is colliding with any of the "building" assets in the game.
+ *  - Using simple axis-aligned bounding box collision detection.
+ *
+ * Currently only checks x,y values, but could be modified to check on the z,
+ * or even any number of axis (likely with an exponentially bad performance hit).
+ *
+ * Sizes are halfed as they are the width/height of the shapes, when we actually want
+ * the distance from the center to the side of the asset (assuming it's rectangular...)
+ */
+bool GameWorld::BuildingsCollisionCheck(GameAsset *asset) {
+
+  glm::vec3 assetCoords = asset->GetCoords();
+  glm::vec3 assetSize = asset->GetSize() / 2;
+
+  for(int i = 1; i <= numberOfBuildings; i++) {
+    glm::vec3 buildingCoords = asset_manager->GetAssetRef(i)->GetCoords();
+    glm::vec3 buildingSize = asset_manager->GetAssetRef(i)->GetSize() / 2;
+    std::cout << "checking for collisions" << std::endl;
+    if ((std::abs(assetCoords.x - buildingCoords.x) < assetSize.x + buildingSize.x) &&
+        (std::abs(assetCoords.y - buildingCoords.y) < assetSize.y + buildingSize.y)) {
+      //std::cout << "Collision with a building detect!" << std::endl;
+      return true;
+    } else {
+      // Don't return false yet, gotta check for collisions with other buildings!
+    }
+  }
+
+  // If we haven't already returned true, the asset isn't colliding with any buildings, so:
+  return false;
+
 }

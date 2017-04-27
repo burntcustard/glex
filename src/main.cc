@@ -14,9 +14,17 @@
 #include "GameWorld.h"
 #include "Camera.h"
 
+
+
 // Global variables (boo)
 Camera camera(0.0, 0.0, 4.0); // Initialise the camera at xyz coords #,#,#
 std::string heldKeys = "";
+// game_world is redefined in main... eep. BUT I can't figure out a way to use it
+// without it being a global variable, as it needs to be accessed by
+// cube_assets - because it contains the building collision check function :/
+std::shared_ptr<GameWorld> game_world;
+
+
 
 /*
  * SDL timers run in separate threads.  In the timer thread
@@ -44,7 +52,7 @@ struct SDLWindowDeleter {
 
 /**
  * Updates that happen 60 times a second.
- * TODO: Split into several individual files...
+ * TODO: Split into more sensible segments (input file?)
  */
 void Update(const Uint8* keys, glm::vec2 &mouseDelta, const std::shared_ptr<GameWorld> game_world) {
 
@@ -195,6 +203,8 @@ ApplicationMode ParseOptions (int argc, char ** argv) {
   return TRANSFORM;
 }
 
+
+
 int main(int argc, char ** argv) {
   Uint32 delay = 1000/60; // in milliseconds
 
@@ -208,7 +218,8 @@ int main(int argc, char ** argv) {
 
   auto mode = ParseOptions(argc, argv);
   auto window = InitWorld();
-  auto game_world = std::make_shared<GameWorld>(mode);
+  // TODO: Declare this here again as shared_ptr... without everything breaking:
+  game_world = std::make_shared<GameWorld>(mode);
 
   if(!window) {
     SDL_Quit();

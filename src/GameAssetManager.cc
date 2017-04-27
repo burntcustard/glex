@@ -55,6 +55,8 @@ void GameAssetManager::operator=(GameAssetManager const& the_manager) {
   // TODO: implement this
 }
 
+
+
 /**
  * Adds a GameAsset to the scene graph.
  */

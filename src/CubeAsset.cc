@@ -2,10 +2,22 @@
 
 #include <vector>
 
+// Have to include this here and not in the header file because things
+// can't depend on each other... or er, something. Coming from JavaScript
+// where it all figures out dependencies for you, this has been tricky...
+#include "GameWorld.h"
+
+
+// Getting the global variable(s) from main.cc in (not ideal...)
 extern Camera camera;
 
 
-CubeAsset::CubeAsset(float x, float y, float z, float w, float l, float h, float r, float g, float b) {
+
+CubeAsset::CubeAsset(
+      float x, float y, float z,
+      float w, float l, float h,
+      float r, float g, float b
+    ) {
 
   coords = glm::vec3(x, y, z);      // x, y, z world coordinates.
   size   = glm::vec3(w, l, h);      // width, length, height.
@@ -69,12 +81,25 @@ CubeAsset::CubeAsset(float x, float y, float z, float w, float l, float h, float
 
   // immediately bind the buffer and transfer the data
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_token);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertex_buffer.size(), &vertex_buffer.front(), GL_STATIC_DRAW);
+  glBufferData(
+    GL_ARRAY_BUFFER,
+    sizeof(GLfloat) * vertex_buffer.size(),
+    &vertex_buffer.front(),
+    GL_STATIC_DRAW
+  );
 
   glGenBuffers(1, &element_buffer_token);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element_buffer_token);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * element_buffer_length, &element_buffer.front(), GL_STATIC_DRAW);
+  glBufferData(
+    GL_ELEMENT_ARRAY_BUFFER,
+    sizeof(GLuint) * element_buffer_length,
+    &element_buffer.front(),
+    GL_STATIC_DRAW
+  );
+
 }
+
+
 
 CubeAsset::~CubeAsset() {
 }
@@ -93,6 +118,8 @@ void checkError(std::string file, int line) {
     exit(-1);
   }
 }
+
+
 
 void CubeAsset::Draw(GLuint program_token) {
   if(!glIsProgram(program_token)) {
@@ -178,9 +205,11 @@ void CubeAsset::Draw(GLuint program_token) {
 }
 
 
+
 glm::vec3 CubeAsset::GetCoords() {
   return coords;
 }
+
 
 
 glm::vec3 CubeAsset::GetSize() {
@@ -197,12 +226,27 @@ glm::vec3 CubeAsset::GetSize() {
  */
 void CubeAsset::Move(float x, float y, float z) {
 
+  extern GameWorld* game_world;
+
   // Different cube assets will have different speeds?
   // E.g. the zombie cubes should be slower than player cube?
   float speed = 0.02;
 
-  glm::vec3 direction = glm::vec3(x, y, z);
+  coords.x += x * speed;
+  // Do collision detection and move back if needed:
+  if (game_world->BuildingsCollisionCheck(this)) {
+    coords.x -= x * speed;
+  }
 
-  coords += direction * speed;
+  coords.y += y * speed;
+  // Do collision detection and move back if needed:
+  if (game_world->BuildingsCollisionCheck(this)) {
+    coords.y -= y * speed;
+  }
+
+  coords.z += z * speed;
+  // Do collision detection and move back if needed?
+  // Nope because we're not checking for collisions on the z axis right now!
+  // TODO: Implement this in a way that it COULD be used if needed.
 
 }
