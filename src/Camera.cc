@@ -99,7 +99,9 @@ void Camera::Follow(std::shared_ptr<GameAsset> the_asset) {
   // Actually is 1/2 the width (and height because it's a square) of the area.
   // Could be a rectangle rather than square (requiring separate x/y values).
   // SHOULD be based off camera in some way, rather than just world coordinates?
-  float fmSize = 1.5;
+  // If this is too high, the asset being followed may disappear behind other
+  // assets due to the perspective / field of view.
+  float fmSize = 1.2;
 
   // "signbit(x) - 0.5 * 2" is either -1 or 1, depending on if x is positive or
   // negative. So these basically add or subtract the amount that the asset has

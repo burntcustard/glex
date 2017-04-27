@@ -3,8 +3,6 @@
 
 
 GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<GameAssetManager>(mode)) {
-  //asset_manager->AddAsset(std::make_shared<CubeAsset>(0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0));
-  //asset_manager->AddAsset(std::make_shared<CubeAsset>(3.0, 0.0, 0.0, 1.0, 1.0, 2.0, 1.0, 0.0, 0.0));
 
   srand (time(NULL));
 
@@ -22,13 +20,29 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
 
   for (int i = 1; i <= numberOfBuildings; i++) {
 
-    // Height of the building, between 1 and 2 in increments of 0.25:
-    float height = 1 + (rand() % 5) / 4.0;
+    /**
+     * Explanation of pseudo random number generation use in this function:
+     *
+     *        Minimum      Size of increments
+     *           |                 |
+     * float x = 4 + rand() % 3 * 0.5
+     *                        |
+     *               Number of increments
+     *
+     * So in this example, the random number would be:
+     * " rand() % 3 " = 0, 1, or 2
+     * " * 0.5      " = 0, 0.5, or 1
+     * " 4 +        " = 4, 4.5, or 5 <- Final potential values.
+     *
+     */
+
+    // Height of the building, between 0.8 and 1.6 in increments of 0.2:
+    float height = 0.8 + rand() % 5 * 0.2;
     //std::cout << "random height = " << height << std::endl;
 
     // Color of the building (used for r,g,b components),
     // between 0.5 and 0.6 in increments of 0.025:
-    float color = 0.5 + (rand() % 5) / 40.0;
+    float color = 0.5 + rand() % 5 * 0.025;
     //std::cout << "random color = " << color << std::endl;
 
     asset_manager->AddAsset(std::make_shared<CubeAsset>(
@@ -132,26 +146,47 @@ int GameWorld::GetNoOfBuildings() {
 
 
 /**
- * Checks if an asset is colliding with any of the "building" assets in the game.
- *  - Using simple axis-aligned bounding box collision detection.
+ * Simple axis-aligned bounding box collision detection between two assets.
  *
  * Currently only checks x,y values, but could be modified to check on the z,
- * or even any number of axis (likely with an exponentially bad performance hit).
+ * or even any number of axis (with quite a bit of work as right now it's all vec3s).
  *
  * Sizes are halfed as they are the width/height of the shapes, when we actually want
  * the distance from the center to the side of the asset (assuming it's rectangular...)
+ *
+ */
+bool GameWorld::CollisionCheck(GameAsset *assetA, GameAsset *assetB) {
+
+  glm::vec3 aCoords = assetA->GetCoords();
+  glm::vec3 aSize = assetA->GetSize() / 2;
+  glm::vec3 bCoords = assetB->GetCoords();
+  glm::vec3 bSize = assetB->GetSize() / 2;
+
+  if ((std::abs(aCoords.x - bCoords.x) < aSize.x + bSize.x) &&
+      (std::abs(aCoords.y - bCoords.y) < aSize.y + bSize.y)) {
+    return true;
+  } else {
+    return false;
+  }
+
+}
+
+
+
+/**
+ * Checks if an asset is colliding with any of the "building" assets in the game.
  */
 bool GameWorld::BuildingsCollisionCheck(GameAsset *asset) {
 
-  glm::vec3 assetCoords = asset->GetCoords();
-  glm::vec3 assetSize = asset->GetSize() / 2;
-
   for(int i = 1; i <= numberOfBuildings; i++) {
-    glm::vec3 buildingCoords = asset_manager->GetAssetRef(i)->GetCoords();
-    glm::vec3 buildingSize = asset_manager->GetAssetRef(i)->GetSize() / 2;
-    std::cout << "checking for collisions" << std::endl;
-    if ((std::abs(assetCoords.x - buildingCoords.x) < assetSize.x + buildingSize.x) &&
-        (std::abs(assetCoords.y - buildingCoords.y) < assetSize.y + buildingSize.y)) {
+
+    // Get a pointer to the building asset. Uses .get() because
+    // GetAssetRef actually returns a shared_ptr not a regular pointer.
+    // TODO: Figure out if it's better to keep this as is, or use shared_ptrs
+    //       everywhere, or change GetAssetRef() to not return shared_ptr?
+    GameAsset *building = asset_manager->GetAssetRef(i).get();
+
+    if (GameWorld::CollisionCheck(asset, building)) {
       //std::cout << "Collision with a building detect!" << std::endl;
       return true;
     } else {

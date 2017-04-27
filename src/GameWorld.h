@@ -35,6 +35,7 @@ class GameWorld {
    * Moving assets that are supposed to move, etc.
    */
   void Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mouseDelta, Camera &camera);
+  bool CollisionCheck(GameAsset *assetA, GameAsset *assetB);
   bool BuildingsCollisionCheck(GameAsset *asset);
   int GetNoOfBuildings();
 
