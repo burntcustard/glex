@@ -212,12 +212,11 @@ int main(int argc, char ** argv) {
   // every time SDL_PollEvent is (indirectly) called in the main event loop.
   const Uint8* keys = SDL_GetKeyboardState(NULL);
 
-  bool quit = false;
-
   glm::vec2 mouseDelta = glm::vec2(0,0);
 
   auto mode = ParseOptions(argc, argv);
   auto window = InitWorld();
+
   // TODO: Declare this here again as shared_ptr... without everything breaking:
   game_world = std::make_shared<GameWorld>(mode);
 
@@ -235,12 +234,9 @@ int main(int argc, char ** argv) {
 
     while (SDL_WaitEvent(&event)) {
 
-      //std::cout << "beep";
-
       switch (event.type) {
         case SDL_QUIT:
           SDL_Quit();
-          quit = true;
           std::cout << "SDL_Quit... ing" << std::endl;
           break;
 

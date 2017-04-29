@@ -6,54 +6,230 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
 
   srand (time(NULL));
 
-  numberOfBuildings = 5;
-  //std::cout << "Number of buildings at start: " << numberOfBuildings << std::endl;
+  /**
+   * Explanation of pseudo random number generation used in this function:
+   *
+   *        Minimum      Size of increments
+   *           |                 |
+   * float x = 4 + rand() % 3 * 0.5
+   *                        |
+   *               Number of increments
+   *
+   * So in this example, the random number would be:
+   * " rand() % 3 " = 0, 1, or 2
+   * " * 0.5      " = 0, 0.5, or 1
+   * " 4 +        " = 4, 4.5, or 5 <- Final potential values.
+   *
+   */
 
   // Create the player cube:
   asset_manager->AddAsset(std::make_shared<CubeAsset>(
-      0.0, 0.0, 0.0, // Center of the game world
-      0.2, 0.2, 0.2, // 0.2 size cube
-      1.0, 0.0, 0.0  // red
+    0.0, 0.0, 0.0, // Center of the game world
+    0.2, 0.2, 0.2, // 0.2 size cube
+    1.0, 0.0, 0.0  // red
   ));
 
-  // Create some "buildings"
+  // Create the map
+  CreateMap(13);
 
-  for (int i = 1; i <= numberOfBuildings; i++) {
+  numberOfBuildings = 0;
 
-    /**
-     * Explanation of pseudo random number generation use in this function:
-     *
-     *        Minimum      Size of increments
-     *           |                 |
-     * float x = 4 + rand() % 3 * 0.5
-     *                        |
-     *               Number of increments
-     *
-     * So in this example, the random number would be:
-     * " rand() % 3 " = 0, 1, or 2
-     * " * 0.5      " = 0, 0.5, or 1
-     * " 4 +        " = 4, 4.5, or 5 <- Final potential values.
-     *
-     */
+  for (float c = 0; c < tileMap.size(); c++) {
+    for (float r = 0; r < tileMap[0].size(); r++) {
+      if (tileMap[c][r] == 'O' ||
+          tileMap[c][r] == '0') {
+        numberOfBuildings++;
 
-    // Height of the building, between 0.8 and 1.6 in increments of 0.2:
-    float height = 0.8 + rand() % 5 * 0.2;
-    //std::cout << "random height = " << height << std::endl;
+        // Height of the building, between 0.6 and 1.2 in increments of 0.2:
+        float height = 0.6 + rand() % 4 * 0.2;
+        //std::cout << "random height = " << height << std::endl;
 
-    // Color of the building (used for r,g,b components),
-    // between 0.5 and 0.6 in increments of 0.025:
-    float color = 0.5 + rand() % 5 * 0.025;
-    //std::cout << "random color = " << color << std::endl;
+        // Color of the building (used for r,g,b components),
+        // between 0.5 and 0.6 in increments of 0.025:
+        float color = 0.5 + rand() % 5 * 0.025;
+        //std::cout << "random color = " << color << std::endl;
 
-    asset_manager->AddAsset(std::make_shared<CubeAsset>(
-       i, 1.0, 0.0, // Location
-       1.0, 1.0, height,
-       color, color, color
-    ));
+        asset_manager->AddAsset(std::make_shared<CubeAsset>(
+           c - (tileMap.size() / 2), r - (tileMap[0].size() / 2), 0.0, // Location
+           1.0, 1.0, height,
+           color, color, color
+        ));
+
+      }
+    }
+  }
+
+  // If one of the buildings has been put on top of the
+  // player, try to move the player out of the way.
+  // Note: This could go VERY badly if it never manages to
+  // find somewhere open to move the player to (infinite loop).
+  // Currently swapped from while to if, to try to figure out why it crashes :(
+  GameAsset *player = asset_manager->GetAssetRef(0).get();
+  if (BuildingsCollisionCheck(player)) {
+    std::cout << "Put a building ontop of the player oops" << std::endl;
+    player->Move(0, 2, 0);
+    std::cout << "beep" << std::endl;
+  }
+  /*
+  while (BuildingsCollisionCheck(player)) {
+    player->Move(
+      rand() & (tileMap.size() / 2),
+      rand() & (tileMap[0].size() / 2),
+      0
+    );
+  }
+  */
+
+  //std::cout << "Number of buildings at start: " << numberOfBuildings << std::endl;
+
+  // TODO: Add zombies here?
+
+}
+
+
+
+std::pair<int, int> GameWorld::PickEdgeTile() {
+
+  int c = 0, r = 0;
+
+  // List of edge tiles that haven't already been picked/used:
+  std::vector<std::pair<Uint8, Uint8>> edgeList;
+  for (c = 0; c < tileMap.size(); c++) {
+    for (r = 0; r < tileMap[0].size(); r++) {
+      if ((c == 0 || c == tileMap.size()-1 ||
+           r == 0 || r == tileMap[0].size()-1) &&
+          (tileMap[c][r] == 'O')) {
+        edgeList.push_back(std::make_pair(c, r));
+      }
+    }
+  }
+
+  // If some available edges were found and put in the list:
+  if (edgeList.size()) {
+    // Pick on of 'em at random(ish):
+    return edgeList[rand() % edgeList.size()];
+  } else {
+    // Otherwise return an "error pair":
+    return std::make_pair(-1, -1);
+  }
+}
+
+
+
+/**
+ * Takes a pair of coordinates and returns a randomly-ish selected
+ * pair of coordinates next to it (above, below or to either side, NOT
+ * diagonally), that aren't off the map or one of the edge walls.
+ */
+std::pair<int, int> GameWorld::AddPathNextTo(std::pair<int, int> cell) {
+
+  // Value to return (if if no suitable cells are found this stay as-is):
+  std::pair<int, int> nextPathRef = std::make_pair(-1, -1);
+
+  int pathStraightness = 9;
+
+  // Which direction should we check first, then second, then third, etc.
+  std::vector<char> check = {'N', 'E', 'S', 'W'};
+
+  // Add multiples of the direction we're already going to the check list:
+  if (currentDirection != ' ') {
+    for (int pathStraightness = 9; pathStraightness > 0; pathStraightness--) {
+      check.push_back(currentDirection);
+    }
+  }
+
+  // Shuffle the list. Because there are many of the direction we're currently going,
+  // it'll be relitively unlikely that we'll change direction (unless really needed).
+  std::random_shuffle(check.begin(), check.end());
+
+  // For every element in the direction check list, and while we haven't
+  // already figured out the nextPathRef (i.e. it's still at default value):
+  for (int i = 0; i < check.size() && nextPathRef.first < 0; i++) {
+    int cellToCheckX, cellToCheckY;
+    switch(check[i]) {
+      case 'N': cellToCheckX = cell.first    ; cellToCheckY = cell.second - 1; break;
+      case 'E': cellToCheckX = cell.first + 1; cellToCheckY = cell.second    ; break;
+      case 'S': cellToCheckX = cell.first    ; cellToCheckY = cell.second + 1; break;
+      case 'W': cellToCheckX = cell.first - 1; cellToCheckY = cell.second    ; break;
+      default : std::cout << "Tried to check direction that's not NESW" << std::endl;
+    }
+    if (cellToCheckX > 0 &&
+        cellToCheckX < tileMap.size()-1 &&
+        cellToCheckY > 0 &&
+        cellToCheckY < tileMap[0].size()-1) {
+      //std::cout << "beep";
+      currentDirection = check[i];
+      nextPathRef = std::make_pair(cellToCheckX, cellToCheckY);
+    } else {
+      // Basically return false:
+      return (std::make_pair(-1, -1));
+    }
+  }
+
+  return nextPathRef;
+
+}
+
+
+/**
+ * Creates a tilemap for the game world.
+ *
+ * Two dimensional array, with the following chars:
+ * ' ' = empty space
+ * 'O' = wall section (where a building asset will be placed)
+ * '0' = wall section around the edge of the map that's been "used"...
+ * TODO: Explain "used".
+ *
+ * TODO: This should really be in it's own .cpp file.
+ *
+ */
+void GameWorld::CreateMap(Uint8 width, Uint8 height) {
+
+  // Loop counters for columns, rows, and anything else:
+  int c = 0, r = 0, i = 0;
+
+  if (height == 0) { height = width; }
+
+  // Set the whole map to 'O' (i.e. buildings in each tile):
+  for (c = 0; c < width; c++) {
+    std::vector<char> row; // Create an empty row
+    for (r = 0; r < height; r++) {
+      row.push_back('O'); // Add an element (column) to the row
+    }
+    tileMap.push_back(row); // Add the row to the main vector
+  }
+
+  // Variable to store coords of a random wall segment:
+  std::pair<int, int> randEdge = PickEdgeTile();
+
+  while ((randEdge.first >= 0) && (i < 999)) {
+    i++;
+
+    currentDirection = ' ';
+
+    // Set the edge tile to the "picked/used" char:
+    tileMap[randEdge.first][randEdge.second] = '0';
+    randEdge = PickEdgeTile();
+
+    std::pair<int, int> nextCell = AddPathNextTo(randEdge);
+
+    for (int pathLength = width + height; pathLength > 0; pathLength--) {
+      //std::cout << nextCell.first << std::endl;
+      if (nextCell.first >= 0) {
+        tileMap[nextCell.first][nextCell.second] = ' ';
+      }
+      nextCell = AddPathNextTo(nextCell);
+    }
 
   }
 
-  // TODO: Add zombies here?
+  // Draw tileMap in console:
+  for (c = 0; c < width; c++) {
+    for (r = 0; r < height; r++) {
+      std::cout << tileMap[c][r];
+    }
+    std::cout << std::endl;
+  }
 
 }
 

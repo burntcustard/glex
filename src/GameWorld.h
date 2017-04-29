@@ -2,9 +2,11 @@
 #define GAMEWORLD_H
 
 #include <memory>
+#include <vector>
+#include <algorithm>  // std::random_shuffle
 
 #include <GL/gl.h>
-#include <SDL2/SDL.h> // Needed for Uint8 for holding (keyboard) keys?
+#include <SDL2/SDL.h> // Needed for Uint8 type
 
 #include "common.h"
 #include "GameAssetManager.h"
@@ -17,13 +19,19 @@
  * a very simplified scene graph consisiting of a single GameAssetManager.
  */
 class GameWorld {
+
  public:
+
   /**
    * We thread the ApplicationMode through the GameWorld ss we want to read it
    * in from the user.  Threading the state through the various function calls
    * is preferable (in this case) to having some kind of global state.
    */
   GameWorld(ApplicationMode);
+
+  std::pair<int, int> PickEdgeTile();
+  std::pair<int, int> AddPathNextTo(std::pair<int, int> cell);
+  void CreateMap(Uint8 width, Uint8 height = 0);
 
   /**
    * Calling Draw() will draw the entire world.
@@ -35,12 +43,23 @@ class GameWorld {
    * Moving assets that are supposed to move, etc.
    */
   void Update(const Uint8* keys, std::string &heldKeys, glm::vec2 &mouseDelta, Camera &camera);
+
   bool CollisionCheck(GameAsset *assetA, GameAsset *assetB);
   bool BuildingsCollisionCheck(GameAsset *asset);
   int GetNoOfBuildings();
 
  private:
+
   std::shared_ptr<GameAssetManager> asset_manager;
   int numberOfBuildings;
+
+  // 2D array of the "tiles" in the game world - currently only used for buildings.
+  // tileMap.size() and tileMap[0].size() can be used to get width and height of tileMap.
+  std::vector<std::vector<char>> tileMap;
+
+  // Variable to hold which way the map generator is "looking". Should be moved
+  // inside one of the map functions, but it's way easier having it here for now.
+  char currentDirection;
+
 };
 #endif // GAMEWORLD_H
