@@ -73,7 +73,7 @@ void GameAssetManager::AddAsset(std::shared_ptr<GameAsset> the_asset) {
  * So only use this when really needed (or not at all!)
  */
 void GameAssetManager::AddAsset(std::shared_ptr<GameAsset> the_asset, int i) {
-  draw_list.insert(draw_list.begin()+i, the_asset);
+  draw_list.insert(draw_list.begin() + i, the_asset);
 }
 
 

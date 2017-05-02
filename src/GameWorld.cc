@@ -22,7 +22,7 @@ GameWorld::GameWorld (ApplicationMode mode, Camera &camera) : asset_manager(std:
    *
    */
 
-  // Create the map
+  // Create the tileMap
   CreateMap(7);
 
   numberOfBuildings = 0;
@@ -30,14 +30,15 @@ GameWorld::GameWorld (ApplicationMode mode, Camera &camera) : asset_manager(std:
   for (float c = 0; c < tileMap.size(); c++) {
     for (float r = 0; r < tileMap[0].size(); r++) {
 
+      float x = c - (tileMap.size() / 2);
+      float y = - r - (tileMap[0].size() / 2); // TODO: Investigate negative y-axis bug.
+
       if (tileMap[c][r] == '*') {
         // Create the player cube:
-        float x = c - (tileMap.size() / 2);
-        float y = r - (tileMap[0].size() / 2);
         asset_manager->AddAsset(std::make_shared<CubeAsset>(
           x, y, 0.0, // Location
           0.2, 0.2, 0.2, // 0.2 size cube
-          1.0, 0.0, 0.0  // red
+          1.0, 0.0, 0.0  // Red
         ), 0); // Add to the beginning (index 0) of the draw_list
 
         camera.SetXYCoords(x, y);
@@ -50,6 +51,7 @@ GameWorld::GameWorld (ApplicationMode mode, Camera &camera) : asset_manager(std:
 
       if (tileMap[c][r] == 'O' ||
           tileMap[c][r] == '0') {
+
         numberOfBuildings++;
 
         // Height of the building, between 0.6 and 1.2 in increments of 0.2:
@@ -62,7 +64,7 @@ GameWorld::GameWorld (ApplicationMode mode, Camera &camera) : asset_manager(std:
         //std::cout << "random color = " << color << std::endl;
 
         asset_manager->AddAsset(std::make_shared<CubeAsset>(
-           c - (tileMap.size() / 2), r - (tileMap[0].size() / 2), 0.0, // Location
+           x, y, 0.0,
            1.0, 1.0, height,
            color, color, color
         ));
@@ -309,8 +311,8 @@ std::pair<int, int> GameWorld::FindEmptyCell() {
 
 
 void GameWorld::DrawMapInConsole() {
-  for (int c = 0; c < tileMap.size(); c++) {
-    for (int r = 0; r < tileMap[0].size(); r++) {
+  for (int r = 0; r < tileMap[0].size(); r++) {
+    for (int c = 0; c < tileMap.size(); c++) {
       std::cout << tileMap[c][r];
     }
     std::cout << std::endl;
