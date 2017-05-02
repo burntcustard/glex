@@ -17,7 +17,7 @@
 
 
 // Global variables (boo)
-Camera camera(0.0, 0.0, 4.0); // Initialise the camera at xyz coords #,#,#
+Camera camera(0.0, 0.0, 4.0); // Initialise camera at default coords (see Camera.h for default values).
 std::string heldKeys = "";
 // game_world is redefined in main... eep. BUT I can't figure out a way to use it
 // without it being a global variable, as it needs to be accessed by
@@ -218,7 +218,7 @@ int main(int argc, char ** argv) {
   auto window = InitWorld();
 
   // TODO: Declare this here again as shared_ptr... without everything breaking:
-  game_world = std::make_shared<GameWorld>(mode);
+  game_world = std::make_shared<GameWorld>(mode, camera);
 
   if(!window) {
     SDL_Quit();

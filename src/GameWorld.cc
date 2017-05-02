@@ -2,7 +2,7 @@
 
 
 
-GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<GameAssetManager>(mode)) {
+GameWorld::GameWorld (ApplicationMode mode, Camera &camera) : asset_manager(std::make_shared<GameAssetManager>(mode)) {
 
   srand (time(NULL));
 
@@ -32,11 +32,16 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
 
       if (tileMap[c][r] == '*') {
         // Create the player cube:
+        float x = c - (tileMap.size() / 2);
+        float y = r - (tileMap[0].size() / 2);
         asset_manager->AddAsset(std::make_shared<CubeAsset>(
-          c - (tileMap.size() / 2), r - (tileMap[0].size() / 2), 0.0, // Location
+          x, y, 0.0, // Location
           0.2, 0.2, 0.2, // 0.2 size cube
           1.0, 0.0, 0.0  // red
         ), 0); // Add to the beginning (index 0) of the draw_list
+
+        camera.SetXYCoords(x, y);
+
       }
 
       // Could do "else if" or switch statement here, but simple ifs for
@@ -208,6 +213,9 @@ void GameWorld::CreateMap(Uint8 width, Uint8 height) {
     tileMap.push_back(row); // Add the row to the main vector
   }
 
+  // Replace some building map tiles (excluding outer walls)
+  // with empty "path" tiles (i.e. the space character ' '):
+
   // Variable to store coords of a random wall segment:
   std::pair<int, int> randEdge = PickEdgeTile();
 
@@ -232,6 +240,8 @@ void GameWorld::CreateMap(Uint8 width, Uint8 height) {
 
   }
 
+  // Finished placing path cells.
+
   // Figure out where to put the player:
   std::pair<int, int> playerCoords = FindEmptyCell();
   tileMap[playerCoords.first][playerCoords.second] = '*';
@@ -244,6 +254,9 @@ void GameWorld::CreateMap(Uint8 width, Uint8 height) {
 /**
  * Finds an empty cell as close to the center of the tileMap
  * as possible, and returns it's coordinates as a pair of ints.
+ * Returns (-1, -1) if no empty map tile cells are found.
+ * Has a fixed maximum number of times to check surrounding cells
+ * to ensure no infinite loops if given an unusual tileMap size.
  */
 std::pair<int, int> GameWorld::FindEmptyCell() {
 

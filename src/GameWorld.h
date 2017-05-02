@@ -27,7 +27,7 @@ class GameWorld {
    * in from the user.  Threading the state through the various function calls
    * is preferable (in this case) to having some kind of global state.
    */
-  GameWorld(ApplicationMode);
+  GameWorld(ApplicationMode, Camera &camera);
 
   std::pair<int, int> PickEdgeTile();
   std::pair<int, int> AddPathNextTo(std::pair<int, int> cell);

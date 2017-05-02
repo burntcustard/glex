@@ -20,6 +20,8 @@ class Camera {
     Camera(float, float, float); // Camera placed at xyz coords passed to the constructor.
     ~Camera();
     glm::vec3 GetCoords();
+    void SetCoords(float, float, float);
+    void SetXYCoords(float, float);
     glm::vec3 GetFacing();
     glm::mat4 GetView();
     glm::vec3 GetVelocity();

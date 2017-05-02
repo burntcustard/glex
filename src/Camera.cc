@@ -128,6 +128,38 @@ glm::vec3 Camera::GetCoords() {
 
 
 
+/**
+ * Set the camera's x,y,z coordinates.
+ */
+void Camera::SetCoords(float x, float y, float z) {
+  coords = glm::vec3(x, y, z);
+}
+
+
+
+/**
+ * Set the camera's x,y coordinates (without modifying z).
+ *
+ * Unfortunately, this can't have the same name as the function
+ * SetCoords(), because although it has different paramenters, to not
+ * confuse the compiler, at least one of those parameters would have
+ * to be a different type. But I want to use floats!
+ *
+ * We also couldn't just have one function with optional arguments,
+ * because there would be no "default" value that could be set (e.g.
+ * SetCoords(float x, float y, float z = 0)), because we don't actually
+ * want to set it to 0 (or any other "magic" number), we just want to
+ * leave it alone! Using "NULL" would be the same as writing 0, and as far
+ * as I know there's no other... anything, that could be used as "default".
+ *
+ */
+void Camera::SetXYCoords(float x, float y) {
+  coords.x = x;
+  coords.y = y;
+}
+
+
+
 glm::vec3 Camera::GetFacing() {
   return facing;
 }
