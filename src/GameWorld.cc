@@ -22,20 +22,27 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
    *
    */
 
-  // Create the player cube:
-  asset_manager->AddAsset(std::make_shared<CubeAsset>(
-    0.0, 0.0, 0.0, // Center of the game world
-    0.2, 0.2, 0.2, // 0.2 size cube
-    1.0, 0.0, 0.0  // red
-  ));
-
   // Create the map
-  CreateMap(13);
+  CreateMap(7);
 
   numberOfBuildings = 0;
 
   for (float c = 0; c < tileMap.size(); c++) {
     for (float r = 0; r < tileMap[0].size(); r++) {
+
+      if (tileMap[c][r] == '*') {
+        // Create the player cube:
+        asset_manager->AddAsset(std::make_shared<CubeAsset>(
+          c - (tileMap.size() / 2), r - (tileMap[0].size() / 2), 0.0, // Location
+          0.2, 0.2, 0.2, // 0.2 size cube
+          1.0, 0.0, 0.0  // red
+        ), 0); // Add to the beginning (index 0) of the draw_list
+      }
+
+      // Could do "else if" or switch statement here, but simple ifs for
+      // the player and the buildings in the tileMap is cleaner... but
+      // probably a little slower.
+
       if (tileMap[c][r] == 'O' ||
           tileMap[c][r] == '0') {
         numberOfBuildings++;
@@ -59,18 +66,18 @@ GameWorld::GameWorld (ApplicationMode mode) : asset_manager(std::make_shared<Gam
     }
   }
 
+  /*
+   * Old way of moving the player out of the way of the buildings (before player
+   * location was decided when the map was created). This DIDN'T WORK, because
+   * player->Move caused the program to crash for some reason :(
+   */
+  /*
   // If one of the buildings has been put on top of the
   // player, try to move the player out of the way.
   // Note: This could go VERY badly if it never manages to
   // find somewhere open to move the player to (infinite loop).
   // Currently swapped from while to if, to try to figure out why it crashes :(
   GameAsset *player = asset_manager->GetAssetRef(0).get();
-  if (BuildingsCollisionCheck(player)) {
-    std::cout << "Put a building ontop of the player oops" << std::endl;
-    player->Move(0, 2, 0);
-    std::cout << "beep" << std::endl;
-  }
-  /*
   while (BuildingsCollisionCheck(player)) {
     player->Move(
       rand() & (tileMap.size() / 2),
@@ -178,6 +185,7 @@ std::pair<int, int> GameWorld::AddPathNextTo(std::pair<int, int> cell) {
  * ' ' = empty space
  * 'O' = wall section (where a building asset will be placed)
  * '0' = wall section around the edge of the map that's been "used"...
+ * '*' = where the player will be placed
  * TODO: Explain "used".
  *
  * TODO: This should really be in it's own .cpp file.
@@ -188,6 +196,7 @@ void GameWorld::CreateMap(Uint8 width, Uint8 height) {
   // Loop counters for columns, rows, and anything else:
   int c = 0, r = 0, i = 0;
 
+  // If no height specified, make the map square:
   if (height == 0) { height = width; }
 
   // Set the whole map to 'O' (i.e. buildings in each tile):
@@ -223,14 +232,76 @@ void GameWorld::CreateMap(Uint8 width, Uint8 height) {
 
   }
 
-  // Draw tileMap in console:
-  for (c = 0; c < width; c++) {
-    for (r = 0; r < height; r++) {
+  // Figure out where to put the player:
+  std::pair<int, int> playerCoords = FindEmptyCell();
+  tileMap[playerCoords.first][playerCoords.second] = '*';
+
+  DrawMapInConsole();
+
+}
+
+
+/**
+ * Finds an empty cell as close to the center of the tileMap
+ * as possible, and returns it's coordinates as a pair of ints.
+ */
+std::pair<int, int> GameWorld::FindEmptyCell() {
+
+  int width = tileMap.size();
+  int height = tileMap[0].size();
+  // Integer division truncates results as intended. E.g. 5 / 2 = 2:
+  int x = width / 2;
+  int y = height / 2;
+
+  // Is the center cell already empty?
+  if (tileMap[x][y] == ' ') {
+
+    return std::make_pair(x, y);
+
+  // Center cell not empty:
+  } else {
+
+    // Which is bigger, the width or height of the map?
+    int max = (width > height ?  width : height);
+
+    for (int i = 1; i < max && i < 999; i++) {
+      // Check left and right of the center:
+      if (x - i >= 0 && x + i < width) {
+        if (tileMap[x - i][y    ] == ' ') return std::make_pair(x - i, y    );
+        if (tileMap[x + i][y    ] == ' ') return std::make_pair(x + i, y    );
+      }
+      // Check above and below the center:
+      if (y - i >= 0 && y + i < height) {
+        if (tileMap[x    ][y - i] == ' ') return std::make_pair(x    , y - i);
+        if (tileMap[x    ][y + i] == ' ') return std::make_pair(x    , y + i);
+      }
+      // Check the diagonals:
+      if ((x - i >= 0 && x + i < width) &&
+          (y - i >= 0 && y + i < height)) {
+        if (tileMap[x - i][y - i] == ' ') return std::make_pair(x - i, y - i);
+        if (tileMap[x - i][y + i] == ' ') return std::make_pair(x - i, y + i);
+        if (tileMap[x + i][y - i] == ' ') return std::make_pair(x + i, y - i);
+        if (tileMap[x + i][y + i] == ' ') return std::make_pair(x + i, y + i);
+      }
+    }
+
+  }
+
+  // Er... no empty cells were found if we haven't already returned!
+  std::cout << "Error: No empty cell found to place something" << std::endl;
+  return std::make_pair(-1, -1);
+
+}
+
+
+
+void GameWorld::DrawMapInConsole() {
+  for (int c = 0; c < tileMap.size(); c++) {
+    for (int r = 0; r < tileMap[0].size(); r++) {
       std::cout << tileMap[c][r];
     }
     std::cout << std::endl;
   }
-
 }
 
 

@@ -66,6 +66,18 @@ void GameAssetManager::AddAsset(std::shared_ptr<GameAsset> the_asset) {
 
 
 
+/**
+ * Adds a GameAsset to the scene graph at the specified index.
+ * Potentially an inefficient operation compared to inserting a new asset
+ * into the draw_list if it was a std::list rather than std::vector...
+ * So only use this when really needed (or not at all!)
+ */
+void GameAssetManager::AddAsset(std::shared_ptr<GameAsset> the_asset, int i) {
+  draw_list.insert(draw_list.begin()+i, the_asset);
+}
+
+
+
 std::shared_ptr<GameAsset> GameAssetManager::GetAssetRef(int i) {
   return draw_list[i];
 }

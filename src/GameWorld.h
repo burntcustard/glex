@@ -31,7 +31,9 @@ class GameWorld {
 
   std::pair<int, int> PickEdgeTile();
   std::pair<int, int> AddPathNextTo(std::pair<int, int> cell);
+  std::pair<int, int> FindEmptyCell();
   void CreateMap(Uint8 width, Uint8 height = 0);
+  void DrawMapInConsole();
 
   /**
    * Calling Draw() will draw the entire world.

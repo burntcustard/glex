@@ -21,12 +21,13 @@
  */
 class GameAssetManager {
  public:
-  explicit GameAssetManager(ApplicationMode); // constructor
+  explicit GameAssetManager(ApplicationMode); // Constructor
   virtual ~GameAssetManager();
-  GameAssetManager(GameAssetManager const&); // copy constructor
-  GameAssetManager(GameAssetManager const&&); // move constructor
-  void operator=(GameAssetManager const&); // assignment
-  void AddAsset(std::shared_ptr<GameAsset>);
+  GameAssetManager(GameAssetManager const&); // Copy constructor
+  GameAssetManager(GameAssetManager const&&); // Move constructor
+  void operator=(GameAssetManager const&); // Assignment
+  void AddAsset(std::shared_ptr<GameAsset>); // Add asset to end of draw_list
+  void AddAsset(std::shared_ptr<GameAsset>, int); // Insert asset into draw_list at specific index
   std::shared_ptr<GameAsset> GetAssetRef(int);
   void Draw();
   void Update(float, float, float);
