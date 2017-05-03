@@ -102,6 +102,10 @@ GameWorld::GameWorld (ApplicationMode mode, Camera &camera) : asset_manager(std:
 
 
 
+/**
+ * Picks one of the maps edge cells, that contains a "wall that hasn't already been
+ * picked" char ('O'), and returns it's coordinates (2D array index) as a pair of ints.
+ */
 std::pair<int, int> GameWorld::PickEdgeTile() {
 
   int c = 0, r = 0;
@@ -137,7 +141,7 @@ std::pair<int, int> GameWorld::PickEdgeTile() {
  */
 std::pair<int, int> GameWorld::AddPathNextTo(std::pair<int, int> cell) {
 
-  // Value to return (if if no suitable cells are found this stay as-is):
+  // Value to return (if no suitable cells are found this stay as-is):
   std::pair<int, int> nextPathRef = std::make_pair(-1, -1);
 
   int pathStraightness = 9;
@@ -183,6 +187,7 @@ std::pair<int, int> GameWorld::AddPathNextTo(std::pair<int, int> cell) {
   return nextPathRef;
 
 }
+
 
 
 /**
@@ -253,12 +258,13 @@ void GameWorld::CreateMap(Uint8 width, Uint8 height) {
 }
 
 
+
 /**
  * Finds an empty cell as close to the center of the tileMap
  * as possible, and returns it's coordinates as a pair of ints.
  * Returns (-1, -1) if no empty map tile cells are found.
  * Has a fixed maximum number of times to check surrounding cells
- * to ensure no infinite loops if given an unusual tileMap size.
+ * to ensure no infinite loops if given an unusual tileMap.
  */
 std::pair<int, int> GameWorld::FindEmptyCell() {
 

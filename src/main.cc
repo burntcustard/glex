@@ -15,6 +15,9 @@
 #include "Camera.h"
 
 
+#include <boost/python.hpp>
+
+
 
 // Global variables (boo)
 Camera camera(0.0, 0.0, 4.0); // Initialise camera at default coords (see Camera.h for default values).
