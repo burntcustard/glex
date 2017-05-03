@@ -29,6 +29,22 @@ std::shared_ptr<GameWorld> game_world;
 
 
 
+
+// Python test:
+
+char const* greet()
+{
+   return "hello, world";
+}
+
+BOOST_PYTHON_MODULE(hello_ext)
+{
+    using namespace boost::python;
+    def("greet", greet);
+}
+
+
+
 /*
  * SDL timers run in separate threads.  In the timer thread
  * push an event onto the event queue.  This event signifies
