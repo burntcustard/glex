@@ -38,3 +38,19 @@ See
 > $ ./src/shaderexample --help
 
 for usage instructions.
+
+# Boost.Python testing #
+
+This test is based off the example given here: https://en.wikibooks.org/wiki/Python_Programming/Extending_with_C%2B%2B
+
+To build the "hello world" test library "hello.so", in the src file, run:
+
+> $ python setup.py build
+
+This will create hello.so in /build/lib-linux-... which can be run from there
+(or moved to somewhere else), and then tested with (in the same directory):
+
+> $ python
+>>> import hello
+>>> hello.greet()
+

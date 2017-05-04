@@ -15,9 +15,6 @@
 #include "Camera.h"
 
 
-#include <boost/python.hpp>
-
-
 
 // Global variables (boo)
 Camera camera(0.0, 0.0, 4.0); // Initialise camera at default coords (see Camera.h for default values).
@@ -26,22 +23,6 @@ std::string heldKeys = "";
 // without it being a global variable, as it needs to be accessed by
 // cube_assets - because it contains the building collision check function :/
 std::shared_ptr<GameWorld> game_world;
-
-
-
-
-// Python test:
-
-char const* greet()
-{
-   return "hello, world";
-}
-
-BOOST_PYTHON_MODULE(hello_ext)
-{
-    using namespace boost::python;
-    def("greet", greet);
-}
 
 
 
