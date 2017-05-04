@@ -4,19 +4,47 @@ typedef std::vector< std::vector<char> > mapArray;
 
 
 
-// Boost.Python test:
+/**
+ * Code in this file has been kept as simple as possible, to try to ensure that
+ * the Python bindings work without having 99 errors and warnings to fix...
+ * Ideally it would use pointers rather than passing values around everwhere,
+ * (e.g. rather than pairs of ints for cell coordinates, just a pointer to the cell).
+ */
 
 
 
-BOOST_PYTHON_MODULE(createMap)
-{
-    using namespace boost::python;
-    def("test", Test);
+/**
+ * Python map testing code. This allows for testing the map generator in Python.
+ *
+ * How to use (TODO: Move or copy this to a readme)
+ *
+ * In /src create the module with:
+ * $ python setup.py build
+ *
+ * Change to the directory where createMap.so lives (or
+ * move it), then start an interacive Python session and:
+ * >>> import createMap
+ * >>> createMap.test(#,#)
+ *
+ * Python overloads / optional arguments info:
+ * http://stackoverflow.com/questions/35886682/passing-specific-arguments-to-boost-python-function-with-default-arguments
+ *
+ */
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(test_overloads, Test, 1, 4)
+
+BOOST_PYTHON_MODULE(createMap) {
+  using namespace boost::python;
+  def("test", Test, test_overloads((
+    arg("width"),
+    arg("height")=0,
+    arg("pathLength")=0,
+    arg("pathStraightness")=0
+  )));
 }
 
-
-void Test(int width, int height) {
-  mapArray testMap = CreateMap(width, height);
+void Test(int width, int height, int pathLength, int pathStraightness) {
+  mapArray testMap = CreateMap(width, height, pathLength, pathStraightness);
   DrawMapInConsole(testMap);
 }
 
@@ -28,7 +56,7 @@ void Test(int width, int height) {
  */
 std::pair<int, int> PickEdgeTile(mapArray tileMap) {
 
-  int c = 0, r = 0;
+  uint8_t c = 0, r = 0;
 
   // List of edge tiles that haven't already been picked/used:
   std::vector< std::pair<int, int> > edgeList;
@@ -58,7 +86,7 @@ std::pair<int, int> PickEdgeTile(mapArray tileMap) {
  * pair of coordinates next to it (above, below or to either side, NOT
  * diagonally), that aren't off the map or one of the edge walls.
  */
-std::pair<int, int> AddPathNextTo(std::pair<int, int> cell, mapArray tileMap, char currentDirection) {
+std::pair<int, int> AddPathNextTo(std::pair<int, int> cell, mapArray tileMap, char &currentDirection, int pathStraightness) {
 
   // Value to return (if no suitable cells are found this stay as-is):
   std::pair<int, int> nextPathRef = std::make_pair(-1, -1);
@@ -68,7 +96,7 @@ std::pair<int, int> AddPathNextTo(std::pair<int, int> cell, mapArray tileMap, ch
 
   // Add multiples of the direction we're already going to the check list:
   if (currentDirection != ' ') {
-    for (int pathStraightness = 9; pathStraightness > 0; pathStraightness--) {
+    for (int i = 0; i < pathStraightness; i++) {
       check.push_back(currentDirection);
     }
   }
@@ -79,8 +107,8 @@ std::pair<int, int> AddPathNextTo(std::pair<int, int> cell, mapArray tileMap, ch
 
   // For every element in the direction check list, and while we haven't
   // already figured out the nextPathRef (i.e. it's still at default value):
-  for (int i = 0; i < check.size() && nextPathRef.first < 0; i++) {
-    int cellToCheckX, cellToCheckY;
+  for (uint8_t i = 0; i < check.size() && nextPathRef.first < 0; i++) {
+    uint8_t cellToCheckX = 0, cellToCheckY = 0;
     switch(check[i]) {
       case 'N': cellToCheckX = cell.first    ; cellToCheckY = cell.second - 1; break;
       case 'E': cellToCheckX = cell.first + 1; cellToCheckY = cell.second    ; break;
@@ -175,20 +203,29 @@ std::pair<int, int> FindEmptyCell(mapArray tileMap) {
  * '*' = where the player will be placed
  * TODO: Explain "used".
  *
- * TODO: This should really be in it's own .cpp file.
- *
  */
-mapArray CreateMap(int width, int height) {
+mapArray CreateMap(int width, int height, int pathLength, int pathStraightness) {
 
   char currentDirection;
 
   std::vector< std::vector<char> > tileMap;
 
   // Loop counters for columns, rows, and anything else:
-  int c = 0, r = 0, i = 0;
+  int c = 0, r = 0, i = 0, j = 0;
+
+  // If no width specified, make the map 7 cells wide:
+  if (width == 0) { width = 7; }
 
   // If no height specified, make the map square:
   if (height == 0) { height = width; }
+
+  // Default values for pathLength and pathStraightness if not specified:
+  if (pathLength == 0) { pathLength = width + height; }
+  if (pathStraightness == 0) { pathStraightness = 9; }
+
+  std::cout << "Generating " << width << "x" << height << " tilemap with:" << std::endl;
+  std::cout << " - pathLength: " << pathLength << std::endl;
+  std::cout << " - pathStraightness: " << pathStraightness << std::endl;
 
   // Set the whole map to 'O' (i.e. buildings in each tile):
   for (c = 0; c < width; c++) {
@@ -214,14 +251,24 @@ mapArray CreateMap(int width, int height) {
     tileMap[randEdge.first][randEdge.second] = '0';
     randEdge = PickEdgeTile(tileMap);
 
-    std::pair<int, int> nextCell = AddPathNextTo(randEdge, tileMap, currentDirection);
+    std::pair<int, int> nextCell = AddPathNextTo(
+      randEdge,
+      tileMap,
+      currentDirection,
+      pathStraightness
+    );
 
-    for (int pathLength = width + height; pathLength > 0; pathLength--) {
+    for (j = 0; j < pathLength; j++) {
       //std::cout << nextCell.first << std::endl;
       if (nextCell.first >= 0) {
         tileMap[nextCell.first][nextCell.second] = ' ';
       }
-      nextCell = AddPathNextTo(nextCell, tileMap, currentDirection);
+      nextCell = AddPathNextTo(
+        nextCell,
+        tileMap,
+        currentDirection,
+        pathStraightness
+      );
     }
 
   }
@@ -239,8 +286,8 @@ mapArray CreateMap(int width, int height) {
 
 
 void DrawMapInConsole(mapArray tileMap) {
-  for (int r = 0; r < tileMap[0].size(); r++) {
-    for (int c = 0; c < tileMap.size(); c++) {
+  for (uint8_t r = 0; r < tileMap[0].size(); r++) {
+    for (uint8_t c = 0; c < tileMap.size(); c++) {
       std::cout << tileMap[c][r];
     }
     std::cout << std::endl;

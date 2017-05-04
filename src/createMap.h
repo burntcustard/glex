@@ -9,10 +9,10 @@
 typedef std::vector< std::vector<char> > mapArray;
 
 std::pair<int, int> PickEdgeTile(mapArray);
-std::pair<int, int> AddPathNextTo(std::pair<int, int> cell, mapArray, char);
+std::pair<int, int> AddPathNextTo(std::pair<int, int> cell, mapArray, char &currentDirection);
 std::pair<int, int> FindEmptyCell(mapArray);
-mapArray CreateMap(int width, int height = 0);
+mapArray CreateMap(int width = 0, int height = 0, int pathLength = 0, int pathStraightness = 0);
 void DrawMapInConsole(mapArray);
-void Test(int width, int height = 0);
+void Test(int width = 0, int height = 0, int pathLength = 0, int pathStraightness = 0);
 
 #endif // CREATEMAP_H
