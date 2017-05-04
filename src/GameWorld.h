@@ -12,6 +12,7 @@
 #include "GameAssetManager.h"
 #include "CubeAsset.h"
 #include "Camera.h"
+#include "createMap.h"
 
 /**
  * GameWorld allows us to separate the management of the game world from the
@@ -29,11 +30,12 @@ class GameWorld {
    */
   GameWorld(ApplicationMode, Camera &camera);
 
-  std::pair<int, int> PickEdgeTile();
-  std::pair<int, int> AddPathNextTo(std::pair<int, int> cell);
-  std::pair<int, int> FindEmptyCell();
-  void CreateMap(Uint8 width, Uint8 height = 0);
-  void DrawMapInConsole();
+  // These are now in createMap.cc
+  //std::pair<int, int> PickEdgeTile();
+  //std::pair<int, int> AddPathNextTo(std::pair<int, int> cell);
+  //std::pair<int, int> FindEmptyCell();
+  //void CreateMap(Uint8 width, Uint8 height = 0);
+  //void DrawMapInConsole();
 
   /**
    * Calling Draw() will draw the entire world.
@@ -61,7 +63,7 @@ class GameWorld {
 
   // Variable to hold which way the map generator is "looking". Should be moved
   // inside one of the map functions, but it's way easier having it here for now.
-  char currentDirection;
+  //char currentDirection;
 
 };
 #endif // GAMEWORLD_H
